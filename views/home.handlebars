@@ -1,2 +1,24 @@
-<h1>Real Chet FC</h1>
-<p>Coming Soon</p>
+<style>
+    .comingSoon {font-size: 32px; padding: 0 10px; background-color: #000; width: auto;}
+    .line {height: 5px; position: relative; bottom: -28px; z-index: -1;}
+    .yellow {background-color: var(--secondaryColor);}
+    .red {background-color: var(--primaryColor);}
+    body {text-align: center;}
+    .centerItems {display: flex; justify-content: center;}
+    .stickyBottom {position: absolute; bottom: 10px;}
+    .fullHeight {height: 100vh;}
+</style>
+<div class="container fullHeight">
+    <img style="width: 400px; max-width: 90vw;" src="images/logo.png" alt="">
+    <div class="line red"></div>
+    <div class="centerItems">
+        <div class="comingSoon">COMING</div>
+    </div>
+    <div class="line yellow"></div>
+    <div class="centerItems">
+        <div class="comingSoon">SOON</div>
+    </div>
+</div>
+<div class="centerItems stickyBottom">
+    <div class="comingSoon">#KOOL</div>
+</div>
