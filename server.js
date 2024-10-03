@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3001;
 const path = require('path');
 const exphbs = require('express-handlebars');
 const hbs = exphbs.create({});
+const busboy = require('connect-busboy');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const models = require('./models');
@@ -23,6 +24,7 @@ const sess = {
     })
 };
 
+app.use(busboy());
 app.use(session(sess));
 app.engine('handlebars', hbs.engine);
 
