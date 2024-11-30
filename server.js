@@ -24,6 +24,11 @@ const sess = {
     })
 };
 
+console.log(process.env.BASEPATH);
+hbs.handlebars.registerHelper('basepath', () => {
+    return process.env.BASEPATH;
+});
+
 app.use(busboy());
 app.use(session(sess));
 app.engine('handlebars', hbs.engine);
