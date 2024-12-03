@@ -25,7 +25,8 @@
     --tableCellPadding: 10px 0px;
     --primaryFontFamily: Open Sans;
     --secondaryFontFamily: Open Sans;
-    --tertiaryFontFamily: Open sans;
+    --tertiaryFontFamily: Open Sans;
+    --bs-body-font-family: Open Sans;
     --bs-body-bg: black;
     --bs-body-color: white;
 }

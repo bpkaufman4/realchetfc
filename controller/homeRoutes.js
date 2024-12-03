@@ -28,4 +28,9 @@ router.post('/uploadFile', async (req, res) => {
     });
 });
 
+router.get('/admin', (req, res) => {
+    console.log(req.session.userType);
+    res.render('admin', {layout: 'admin'});
+})
+
 module.exports = router;

@@ -1,22 +1,50 @@
+:root {
+    --card-multiplier: .75;
+    --overlay-base: -44px;
+}
+
+@media (min-width: 768px) {
+    :root {
+        --card-multiplier: 1;
+        --overlay-base: -24px;
+    }
+}
+
 .hero {width: 100%; height: 270px; object-fit: cover; background-position: 0;}
-.card {background: #99999966; border-radius: 20px; padding: 20px;}
+.card {background: rgb(255 255 255 / 20%); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px;}
 .after-hero {text-align: center;font-size: 32px;}
-.overlay-top {position: relative; top: -64px; margin-bottom: -44px;}
+.overlay-top {position: relative; top: calc(var(--overlay-base) - 20px); margin-bottom: -44px;}
 
 .line {text-align: center;}
 .line h1 {width: fit-content; margin: auto; padding: 0 20px; background-color: var(--bs-body-bg); position: relative;}
-.line::after {content:''; height: 3px; width: 100%; background-color: var(--primaryColor); display: block; margin-top: -15px;}
+.line::after {content:''; height: 3px; width: 100%; background-color: var(--primaryColor); display: block; margin-top: -1.25rem;}
 
-.player-card {width: 150px; height: 207px; background-image: url('../images/fifaPlayerCard.png'); background-repeat: no-repeat; background-size: contain; padding: 20px 15px; padding-right: 0px;}
-.players-slide {width: 100%; overflow-y: overlay; display: flex; flex-direction: row;}
-.head-shot-container {width: calc(50% + 5px); display: flex; align-items: flex-end;}
+.player-card {width: calc(150px * var(--card-multiplier)); height: calc(207px * var(--card-multiplier)); background-image: url('../images/fifaPlayerCard.png'); background-repeat: no-repeat; background-size: contain; padding: calc(20px * var(--card-multiplier)) calc(15px * var(--card-multiplier)); padding-right: 0px; display: inline-block; margin-right: calc(10px * var(--card-multiplier)); transition: transform .1s; cursor: pointer;}
+.player-card:hover {transform: scale(1.1);}
+
+.players-slide {width: 100%; overflow-y: overlay; margin-top: 20px; text-wrap: nowrap; padding: calc(15px * var(--card-multiplier)) 0;}
+.head-shot-container {width: calc(50% + calc(5px * var(--card-multiplier))); display: flex; align-items: flex-end;}
 .head-shot {width: 100%; height: auto;}
 .half-height {height: 50%;}
-.top {height: 95px;}
+.top {height: calc(95px* var(--card-multiplier));}
 .top, .stats {display: flex; justify-content: space-around;}
 .stats-left, .stats-right {display: flex; flex-direction: column;}
 .last-name, .stats {text-align: center;}
-.icons {width: calc(50% - 5px); padding-right: 20px;}
-.icons img {width: auto;}
-.bottom {height: 75px; padding-top: 11px;}
-.icons > * {height: 25%; font-size: 14px;}
+.icons {width: calc(50% - calc(5px * var(--card-multiplier))); padding-right: calc(20px * var(--card-multiplier));}
+.icons img {width: auto; height: 100%;}
+.bottom {height: calc(75px * var(--card-multiplier)); padding-top: calc(11px * var(--card-multiplier)); padding-right: calc(15px * var(--card-multiplier)); font-size: calc(10px * var(--card-multiplier));}
+.icons > * {height: 25%; font-size: calc(14px * var(--card-multiplier));}
+
+::-webkit-scrollbar{
+    height: 8px;
+    width: 4px;
+    background: black;
+}
+::-webkit-scrollbar-thumb:horizontal{
+    background: gray;
+    border-radius: 10px;
+}
+
+@media (min-width: 1024px) {
+    .hero {height: 350px;}
+}

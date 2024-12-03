@@ -9,8 +9,8 @@ const exphbs = require('express-handlebars');
 const hbs = exphbs.create({});
 const busboy = require('connect-busboy');
 const session = require('express-session');
+const { User } = require('./models');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const models = require('./models');
 
 process.env.TZ = "America/Chicago";
 
@@ -24,7 +24,6 @@ const sess = {
     })
 };
 
-console.log(process.env.BASEPATH);
 hbs.handlebars.registerHelper('basepath', () => {
     return process.env.BASEPATH;
 });
@@ -43,5 +42,9 @@ app.use(controller);
 sequelize.sync({ force: true }).then(() => {
     app.listen(PORT, () => {
         console.log(`listening on port ${PORT}`);
+        if(process.env.SETUP === 'true') {
+            console.log(process.env.ADMINS);
+            User.bulkCreate(JSON.parse(process.env.ADMINS), {individualHooks: true});
+        }
     });
 });

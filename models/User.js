@@ -19,12 +19,9 @@ User.init(
             allowNull: false,
             primaryKey: true
         },
-        email: {
+        username: {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                isEmail: true
-            }
+            allowNull: false
         },
         pwd: {
             type: DataTypes.STRING,
@@ -40,11 +37,20 @@ User.init(
         firstName: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        userType: {
+            type: DataTypes.STRING,
+            defaultValue: 'USER',
+            allowNull: false
         }
     },
     {
         hooks: {
             async beforeCreate(newUserData) {
+                newUserData.pwd = await bcrypt.hash(newUserData.pwd, 10);
+                return newUserData;
+            },
+            async beforeUpdate(newUserData) {
                 newUserData.pwd = await bcrypt.hash(newUserData.pwd, 10);
                 return newUserData;
             }
@@ -56,7 +62,13 @@ User.init(
         freezeTableName: true,
         underscored: false,
         modelName: 'user',
-        paranoid: true
+        paranoid: true,
+        indexes: [
+            {
+                unique: true,
+                fields: ['username']
+            }
+        ]
     }
 );
 

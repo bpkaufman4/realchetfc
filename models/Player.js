@@ -1,9 +1,10 @@
 const { Model, DataTypes } = require('sequelize');
-
-const sequelize = require('../config/connection');
+const College = require('./College');
 
 class Player extends Model {};
 
+const sequelize = require('../config/connection');
+const Position = require('./Position');
 
 Player.init(
     {
@@ -23,9 +24,27 @@ Player.init(
         },
         bio: DataTypes.STRING,
         image: DataTypes.STRING,
-        number: DataTypes.INTEGER,
-        position: DataTypes.STRING,
-        birthday: DataTypes.DATE
+        number: DataTypes.STRING,
+        positionId: {
+            type: DataTypes.UUID,
+            allowNull: true,
+            references: {
+                model: Position,
+                key: 'positionId'
+            }
+        },
+        birthday: DataTypes.DATE,
+        homeTown: DataTypes.STRING,
+        heightFeet: DataTypes.INTEGER,
+        heightInches: DataTypes.INTEGER,
+        collegeId: {
+            type: DataTypes.UUID,
+            allowNull: true,
+            references: {
+                model: College,
+                key: 'collegeId'
+            }
+        }
     },
     {
         sequelize,
