@@ -11,6 +11,8 @@ const busboy = require('connect-busboy');
 const session = require('express-session');
 const { User } = require('./models');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const { seedPositions } = require('./db/seeders');
+
 
 process.env.TZ = "America/Chicago";
 
@@ -39,12 +41,24 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(controller);
 
-sequelize.sync({ force: true }).then(() => {
+
+if(process.env.SYNC_DB_ALTER === 'true') {
+    sequelize.sync({force: false, alter: true}).then(() => {
+        app.listen(PORT, () => {
+            console.log(`listening on port ${PORT}`);
+        });
+    })
+} else {
     app.listen(PORT, () => {
         console.log(`listening on port ${PORT}`);
-        if(process.env.SETUP === 'true') {
-            console.log(process.env.ADMINS);
-            User.bulkCreate(JSON.parse(process.env.ADMINS), {individualHooks: true});
-        }
     });
-});
+}
+
+
+if(process.env.SETUP === 'true') {
+    User.bulkCreate(JSON.parse(process.env.ADMINS), {individualHooks: true});
+}
+
+if(process.env.SEED_POSITIONS === 'true') {
+    seedPositions();
+}
