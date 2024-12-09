@@ -38,7 +38,7 @@
 ::-webkit-scrollbar{
     height: 8px;
     width: 4px;
-    background: black;
+    background: var(--bs-body-bg);
 }
 ::-webkit-scrollbar-thumb:horizontal{
     background: gray;

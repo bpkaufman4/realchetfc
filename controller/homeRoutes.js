@@ -19,13 +19,14 @@ router.post('/uploadFile', async (req, res) => {
         console.log(info.filename);
         console.log("Uploading: " + info.filename);
         //Path where image will be uploaded
-        let filename = uuidv4() + path.extname(info.filename);
-        fstream = fs.createWriteStream('public/tempImages/' + filename);
-        const url = process.env.BASEPATH + 'public/tempImages/' + filename;
+        let fileName = uuidv4() + path.extname(info.filename);
+        const relativePath = 'tempImages/' + fileName;
+        const url = process.env.BASEPATH + relativePath;
+        fstream = fs.createWriteStream('public/' + relativePath);
         file.pipe(fstream);
         fstream.on('close', function () {    
-            console.log("Upload Finished of " + filename);              
-            res.json({status: 'success', filename, url});
+            console.log("Upload Finished of " + fileName);              
+            res.json({status: 'success', fileName, url, relativePath});
         });
     });
 });
@@ -60,9 +61,16 @@ router.get('/admin-players', (req, res) => {
 
     Promise.all([positions, players])
     .then(data => {
-        console.log(data[1][0]);
         res.render('admin-players', {layout: 'admin', data: {positions: data[0], players: data[1]}});
     })
 });
+
+router.get('/admin-matches', (req, res) => {
+    if(!req.session.admin) {
+        res.redirect('login');
+        return;
+    }
+    res.render('admin-matches', {layout: 'admin'});
+})
 
 module.exports = router;

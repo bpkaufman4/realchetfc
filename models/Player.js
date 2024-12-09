@@ -33,7 +33,7 @@ Player.init(
                 key: 'positionId'
             }
         },
-        birthday: DataTypes.DATE,
+        birthday: DataTypes.DATEONLY,
         homeTown: DataTypes.STRING,
         heightFeet: DataTypes.INTEGER,
         heightInches: DataTypes.INTEGER,
