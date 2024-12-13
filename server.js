@@ -5,14 +5,12 @@ const sequelize = require('./config/connection');
 const app = express();
 const PORT = process.env.PORT || 3001;
 const path = require('path');
-const exphbs = require('express-handlebars');
-const hbs = exphbs.create({});
+const hbs = require('./initHandlebars');
 const busboy = require('connect-busboy');
 const session = require('express-session');
 const { User } = require('./models');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const { seedPositions } = require('./db/seeders');
-const { DateTime } = require('luxon');
 
 
 process.env.TZ = "UTC";
@@ -26,22 +24,6 @@ const sess = {
         db: sequelize
     })
 };
-
-hbs.handlebars.registerHelper('basepath', () => {
-    return process.env.BASEPATH;
-});
-
-hbs.handlebars.registerHelper('is', (value1, value2) => {
-    return value1 == value2;
-})
-
-hbs.handlebars.registerHelper('dateTimeFormat', (date, format) => {
-    return DateTime.fromJSDate(date).toFormat(format);
-});
-
-hbs.handlebars.registerHelper('dateFormat', (date, format) => {
-    return new DateTime(date).toFormat(format);
-});
 
 app.use(busboy());
 app.use(session(sess));

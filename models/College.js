@@ -30,7 +30,7 @@ College.init(
         freezeTableName: true,
         underscored: false,
         modelName: 'college',
-        paranoid: true
+        paranoid: false
     }
 );
 

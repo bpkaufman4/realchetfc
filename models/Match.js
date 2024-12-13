@@ -35,7 +35,7 @@ Match.init(
         freezeTableName: true,
         underscored: false,
         modelName: 'match',
-        paranoid: true
+        paranoid: false
     }
 );
 

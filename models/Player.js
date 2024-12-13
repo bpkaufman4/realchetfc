@@ -54,7 +54,7 @@ Player.init(
         freezeTableName: true,
         underscored: false,
         modelName: 'player',
-        paranoid: true
+        paranoid: false
     }
 );
 

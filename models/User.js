@@ -62,7 +62,7 @@ User.init(
         freezeTableName: true,
         underscored: false,
         modelName: 'user',
-        paranoid: true,
+        paranoid: false,
         indexes: [
             {
                 unique: true,

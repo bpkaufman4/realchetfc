@@ -29,7 +29,7 @@ Position.init(
         freezeTableName: true,
         underscored: false,
         modelName: 'position',
-        paranoid: true
+        paranoid: false
     }
 );
 

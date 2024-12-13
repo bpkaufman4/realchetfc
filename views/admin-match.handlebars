@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="{{basepath}}styles/admin-match.css" type="text/css" />
+<input type="hidden" id="matchId" value="{{match.matchId}}">
+<div class="modal fade" id="managePlayersModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Lineup</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="mb-3">
+                    <thead>
+                        <th>Player</th>
+                        <th>Goals</th>
+                        <th>Assists</th>
+                        <th></th>
+                    </thead>
+                    <tbody id="boxScoreCatch"></tbody>
+                </table>
+                <h5 class="modal-title mb-3">Add To Lineup</h5>
+                <div id="unplayedCatch"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="saveMatchBtn" type="button" data-bs-dismiss="modal" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between py-3">
+    <div>
+        <h2 class="w-auto">{{dateTimeFormat match.startTime 'D'}} vs. {{match.opponent}}</h2>
+        <p>{{evaluateMatchResult match}}</p>
+    </div>
+    <button class="btn btn-primary" id="managePlayersBtn" data-bs-toggle="modal" data-bs-target="#managePlayersModal">Set Box Score</button>
+</div>
+
+<table>
+</table>
+
+<script src="{{basepath}}javascript/admin-match.js"></script>

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { Position, Player } = require('../models');
+const { Position, Player, Match, BoxScore } = require('../models');
 router.get('/', (req, res) => {
     const templateData = {}
     res.render('home', templateData);
@@ -16,8 +16,6 @@ router.post('/uploadFile', async (req, res) => {
     var fstream;
     req.pipe(req.busboy);
     req.busboy.on('file', function (fieldname, file, info) {
-        console.log(info.filename);
-        console.log("Uploading: " + info.filename);
         //Path where image will be uploaded
         let fileName = uuidv4() + path.extname(info.filename);
         const relativePath = 'tempImages/' + fileName;
@@ -25,7 +23,6 @@ router.post('/uploadFile', async (req, res) => {
         fstream = fs.createWriteStream('public/' + relativePath);
         file.pipe(fstream);
         fstream.on('close', function () {    
-            console.log("Upload Finished of " + fileName);              
             res.json({status: 'success', fileName, url, relativePath});
         });
     });
@@ -70,7 +67,33 @@ router.get('/admin-matches', (req, res) => {
         res.redirect('login');
         return;
     }
-    res.render('admin-matches', {layout: 'admin'});
-})
+
+    Match.findAll()
+    .then(dbData => {
+        let dbDataClean = dbData.map(match => match.get({plain: true}));
+        return dbDataClean;
+    })
+    .then(matches => {
+        res.render('admin-matches', {layout: 'admin', matches});
+    })
+
+});
+
+router.get('/admin-match/:id', (req, res) => {
+    if(!req.session.admin) {
+        res.redirect('login');
+        return;
+    }
+
+    Match.findOne({where: {matchId: req.params.id}, include: {model: BoxScore, include: Player}})
+    .then(dbData => {
+        if(!dbData) {
+            res.redirect('admin-matches');
+            return;
+        }
+        const dbDataClean = dbData.get({plain: true});
+        res.render('admin-match', {layout: 'admin', match: dbDataClean});
+    });
+});
 
 module.exports = router;
