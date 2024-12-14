@@ -2,10 +2,24 @@ const router = require('express').Router();
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { Position, Player, Match, BoxScore } = require('../models');
+const { Position, Player, Match, BoxScore, College } = require('../models');
+const sequelize = require('../config/connection');
 router.get('/', (req, res) => {
-    const templateData = {}
-    res.render('home', templateData);
+    Player.findAll({
+        attributes: {
+            include: [
+                [sequelize.literal(`(SELECT COUNT(*) FROM boxScore WHERE boxScore.playerId = player.playerId)`), 'games'],
+                [sequelize.literal(`ifnull((SELECT SUM(totalGoals.goals) from boxScore as totalGoals where totalGoals.playerId = player.playerId), 0)`), 'goals'],
+                [sequelize.literal(`ifnull((SELECT SUM(totalAssists.assists) from boxScore as totalAssists where totalAssists.playerId = player.playerId), 0)`), 'assists']
+            ]
+        },
+        include: [College, Position]
+    })
+    .then(dbData => {
+        const templateData = {players: dbData.map(player => player.get({plain: true}))};
+        console.log(templateData);
+        res.render('home', templateData);
+    })
 });
 
 router.get('/playerAdd', (req, res) => {

@@ -24,6 +24,7 @@ Player.init(
         },
         bio: DataTypes.STRING,
         image: DataTypes.STRING,
+        imageNoBackground: DataTypes.STRING,
         number: DataTypes.STRING,
         positionId: {
             type: DataTypes.UUID,

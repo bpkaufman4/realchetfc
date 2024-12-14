@@ -4,6 +4,7 @@ const College = require('./College');
 const Position = require('./Position');
 const Match = require('./Match');
 const BoxScore = require('./BoxScore');
+const Eden = require('./Eden');
 
 Player.belongsTo(College, {foreignKey: 'collegeId'});
 Player.belongsTo(Position, {foreignKey: 'positionId'});
@@ -14,4 +15,4 @@ Player.hasMany(BoxScore, {foreignKey: 'playerId'});
 BoxScore.belongsTo(Match, {foreignKey: 'matchId'});
 Match.hasMany(BoxScore, {foreignKey: 'matchId'});
 
-module.exports = { User, College, Position, Player, Match, BoxScore };
+module.exports = { User, College, Position, Player, Match, BoxScore, Eden };

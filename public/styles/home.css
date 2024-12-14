@@ -28,7 +28,10 @@
 .half-height {height: 50%;}
 .top {height: calc(95px* var(--card-multiplier));}
 .top, .stats {display: flex; justify-content: space-around;}
-.stats-left, .stats-right {display: flex; flex-direction: column;}
+.stats {gap: 5px;}
+.stats-left, .stats-right {display: flex; flex-direction: column; width: 40%;}
+.stats-left {text-align: right;}
+.stats-right {text-align: left;}
 .last-name, .stats {text-align: center;}
 .icons {width: calc(50% - calc(5px * var(--card-multiplier))); padding-right: calc(20px * var(--card-multiplier));}
 .icons img {width: auto; height: 100%;}

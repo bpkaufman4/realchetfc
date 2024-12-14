@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { Player } = require('../../models');
 const { persistTemporaryFile } = require('../../helpers');
+const BackgroundRemove = require('../../eden');
 
 router.get('/:id', (req, res) => {
     Player.findOne({where: {playerId: req.params.id}})
@@ -34,6 +35,9 @@ router.post('/create', (req, res) => {
     let request = req.body;
 
     if(request.image) {
+
+        const PlayerNoBackground = new BackgroundRemove(request.image);
+
         persistTemporaryFile(request.image, 'playerImages')
         .then(reply => {
             if(reply.status === 'success') {
@@ -76,12 +80,21 @@ router.patch('/:id', (req, res) => {
         .then(reply => {
             if(reply.status === 'success') {
                 request.image = reply.relativePath;
+
+                const PlayerNoBackground = new BackgroundRemove('public/'+request.image, 'Player');
+
+                PlayerNoBackground.launch()
+                .then(result => {
+                    console.log(result);
+                });
+
                 updatePlayer(request);
             } else {
                 console.log(reply);
                 res.json({status: 'fail', reply});
             }
         })
+
     } else {
         updatePlayer(request);
     }
