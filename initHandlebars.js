@@ -31,7 +31,7 @@ hbs.handlebars.registerHelper('getAge', (date) => {
 });
 
 hbs.handlebars.registerHelper('getHeight', (heightFeet, heightInches) => {
-    return (heightFeet && heightInches) ? `${heightFeet}-${heightInches}` : '';
+    return ((!heightFeet && heightFeet !=0) || (!heightFeet && heightFeet !=0)) ? '' : `${heightFeet}-${heightInches}`;
 });
 
 hbs.handlebars.registerHelper('getFlagEmoji', (countryCode) => {
