@@ -32,9 +32,17 @@ router.post('/uploadFile', async (req, res) => {
     req.pipe(req.busboy);
     req.busboy.on('file', function (fieldname, file, info) {
         //Path where image will be uploaded
+
         let fileName = uuidv4() + path.extname(info.filename);
         const relativePath = 'tempImages/' + fileName;
         const url = process.env.BASEPATH + relativePath;
+        try {
+            if (!fs.existsSync('public/tempImages')) {
+                fs.mkdirSync('public/tempImages');
+            }
+        } catch (err) {
+            console.error(err);
+        }
         fstream = fs.createWriteStream('public/' + relativePath);
         file.pipe(fstream);
         fstream.on('close', function () {    

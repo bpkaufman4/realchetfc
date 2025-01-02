@@ -1,6 +1,13 @@
 const fs = require('fs');
 
 function persistTemporaryFile(fileName, targetDirectory = 'images') {
+    try {
+        if (!fs.existsSync('public/'+targetDirectory)) {
+            fs.mkdirSync('public/'+targetDirectory);
+        }
+    } catch (err) {
+        console.error(err);
+    }
     return new Promise((resolve, reject) => {
         fs.copyFile('./public/tempImages/' + fileName, './public/' + targetDirectory + '/' + fileName, (err) => {
             if(err) {
