@@ -8,12 +8,18 @@ function setBoxScore() {
         let boxScore = {
             goals: r.querySelector('[data-stat="goals"]').value,
             assists: r.querySelector('[data-stat="assists"]').value,
+            mvp: r.querySelector('[data-stat="mvp"]').checked,
             playerId: r.dataset.playerId
         };
         boxScores.push(boxScore);
     });
 
+    const ourScore = getVal('ourScore');
+    const opponentScore = getVal('opponentScore');
+
     const request = {
+        ourScore,
+        opponentScore,
         boxScores,
         matchId: getVal('matchId')
     }
@@ -93,9 +99,11 @@ function getBoxScoreInfo() {
             console.log(bs);
             const tableRow = makeElem('tr');
             tableRow.dataset.playerId = bs.player.playerId;
+            const mvpChecked = bs.mvp ? ' checked ' : '';
             tableRow.innerHTML = `<td>${bs.player.firstName} ${bs.player.lastName}</td>
                 <td><input class="form-control" type="number" step="1" min="0" data-stat="goals" value="${bs.goals}"></td>
-                <td><input class="form-control" type="number" step="1" min="0" data-stat="assists" value="${bs.assists}"></td>`;
+                <td><input class="form-control" type="number" step="1" min="0" data-stat="assists" value="${bs.assists}"></td>
+                <td><input class="form-check-input" type="checkbox" data-stat="mvp" ${mvpChecked}></td>`;
 
             const removeButtonContainer = makeElem('td');
             const removeButton = makeElem('button');

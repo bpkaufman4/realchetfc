@@ -69,14 +69,20 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="mb-3 col-12">
+                        <div class="mb-3 col-6">
                             <label for="collegeId" class="col-form-label">College:</label>
-                            <div class="input-group">
-                                <select class="form-select" name="collegeId" id="collegeId">
-                                    <option value="">Choose a college</option>
-                                </select>
-                                <button class="btn btn-outline-light" type="button" id="editCollegesBtn">Manage Colleges</button>
-                            </div>
+                            <select class="form-select" name="collegeId" id="collegeId">
+                                <option value="" selected>Choose a college</option>
+                                {{#each data.colleges }}
+                                    <option value="{{collegeId}}">{{name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="countryCode" class="col-form-label">Country</label>
+                            <select name="countryCode" id="countryCode" class="form-select">
+                                {{> country-codes}}
+                            </select>
                         </div>
                     </div>
                 </form>

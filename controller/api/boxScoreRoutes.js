@@ -1,5 +1,5 @@
 const sequelize = require('../../config/connection');
-const { Player, BoxScore } = require('../../models');
+const { Player, BoxScore, Match } = require('../../models');
 
 const router = require('express').Router();
 
@@ -82,26 +82,36 @@ router.post('/setForMatch', (req, res) => {
         return;
     }
     const request = req.body;
-    const response = {status: 'success', reply: []}
-    request.boxScores.forEach(bs => {
-        bs.matchId = request.matchId;
-        const upsert = BoxScore.upsert(bs)
-        .then(dbData => {
-            return {status: 'success', reply: dbData}
-        })
-        .catch(err => {
-            return {status: 'error', reply: err}
-        })
 
-        if(upsert.status === 'error') {
-            res.json(upsert);
-            return;
-        } else {
-            response.reply.push(upsert.reply);
-        }
+    const boxScores = new Promise((resolve, reject) => {
+        const reply = [];
+        request.boxScores.forEach(bs => {
+            bs.matchId = request.matchId;
+            const upsert = BoxScore.upsert(bs)
+            .then(dbData => {
+                return {status: 'success', reply: dbData}
+            })
+            .catch(err => {
+                return {status: 'error', reply: err}
+            })
+    
+            if(upsert.status === 'error') {
+                res.json(upsert);
+                return;
+            } else {
+                reply.push(upsert.reply);
+            }
+        });
+        resolve(reply)
+    })
+
+    const matchRequest = {ourScore: request.ourScore, opponentScore: request.opponentScore};
+    const updateMatch = Match.update(matchRequest, {where: {matchId: request.matchId}});
+
+    Promise.resolve([boxScores, updateMatch])
+    .then(reply => {
+        res.json({status: 'success', reply});
     });
-
-    res.json(response);
 });
 
 module.exports = router;

@@ -2,7 +2,18 @@
 <img src="{{basepath}}images/hero-home.png" class="hero">
 <section class="container overlay-top">
     <div class="card">
-        <h1 class="after-hero">Kansas City's Premier Indoor Soccer</h1>
+        <h1 class="after-hero">Real Chet F.C.</h1>
+    </div>
+</section>
+<section class="container">
+    <div class="line mb-5 mt-5">
+        <h1>Our Story</h1>
+    </div>
+    <div class="row align-items-center">
+        <div class="col-3">
+            <img src="{{basepath}}images/thumbs-up.jpg" alt="" class="w-100 rounded">
+        </div>
+        <p class="col-9">Founded in 2017 by captain Ken Akimoto and his high school friends, Real Chet F.C. was born from a shared passion for soccer and a desire to create a team that embodied both skill and camaraderie. What began as a group of friends kicking around a ball in local parks quickly evolved into a competitive football club. Over the years, Real Chet F.C. has grown into a respected club known for its team spirit, determination, and strong sense of community.</p>
     </div>
 </section>
 <section class="container" style="margin-top: 20px;">
@@ -11,16 +22,20 @@
     </div>
     <div class="players-slide">
         {{#each players}}
-        <div class="player-card">
+        <div class="player-card" onclick="window.location.assign('{{basepath}}player/{{playerId}}');">
             <div class="top">
                 <div class="icons">
                     <div class="number">{{number}}</div>
                     <div class="position">{{position.abbreviation}}</div>
+                    {{#if countryCode}}
+                    <div>{{{getFlagEmoji countryCode}}}</div>
+                    {{else}}
                     <div>
-                        <img src="{{{basepath}}}" alt="USA Flag" class="country-icon">
+                        <img src="{{{basepath}}}images/logo-transparent.png">
                     </div>
+                    {{/if}}
                     <div>
-                        <img src="{{{basepath}}}images/jayhawk.png" alt="Jayhawk Logo">
+                        <img src="{{{basepath}}}{{#if college.logoUrl}}{{college.logoUrl}}{{else}}images/logo-transparent.png{{/if}}">
                     </div>
                 </div>
                 <div class="head-shot-container">
@@ -28,7 +43,7 @@
                 </div>
             </div>
             <div class="bottom">
-                <div class="last-name">Brian Kaufman</div>
+                <div class="last-name">{{firstName}} {{lastName}}</div>
                 <div class="stats">
                     <div class="stats-left">
                         <div>Goals</div>

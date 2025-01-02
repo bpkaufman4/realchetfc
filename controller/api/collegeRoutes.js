@@ -1,10 +1,10 @@
 const router = require('express').Router();
-const { Player } = require('../../models');
+const { College } = require('../../models');
 const { persistTemporaryFile } = require('../../helpers');
-const BackgroundRemove = require('../../eden');
+// const BackgroundRemove = require('../../eden');
 
 router.get('/:id', (req, res) => {
-    Player.findOne({where: {playerId: req.params.id}})
+    College.findOne({where: {collegeId: req.params.id}})
     .then(dbData => {
         if(dbData) {
             const cleanData = dbData.get({plain: true});
@@ -15,13 +15,13 @@ router.get('/:id', (req, res) => {
     })
     .catch(err => {
         console.error(err);
-        res.json({status: 'error', message: err.message});
+        res.json({status: 'fail', message: err.message});
     })
 })
 router.post('/create', (req, res) => {
 
-    function createPlayer(newPlayer) {
-        Player.create(newPlayer)
+    function createCollege(newCollege) {
+        College.create(newCollege)
         .then(result => {
             res.json(result);
         });
@@ -34,24 +34,23 @@ router.post('/create', (req, res) => {
 
     let request = req.body;
 
-    if(request.image) {
+    if(request.logoUrl) {
 
-        const PlayerNoBackground = new BackgroundRemove(request.image);
+        // const PlayerNoBackground = new BackgroundRemove(request.image);
 
-        persistTemporaryFile(request.image, 'playerImages')
+        persistTemporaryFile(request.logoUrl, 'collegeLogos')
         .then(reply => {
             if(reply.status === 'success') {
-                request.image = reply.relativePath;
-                createPlayer(request);
+                request.logoUrl = reply.relativePath;
+                createCollege(request);
             } else {
                 console.log(reply);
                 res.json({status: 'fail', reply});
             }
         })
     } else {
-        createPlayer(request);
+        createCollege(request);
     }
-
 });
 
 router.patch('/:id', (req, res) => {
@@ -61,10 +60,11 @@ router.patch('/:id', (req, res) => {
     }
     
     
-    function updatePlayer(newPlayer) {
-        Player.update(newPlayer, {where: {playerId: req.params.id}})
-        .then(result => {
-            res.json(result);
+    function updateCollege(newCollege) {
+        console.log(newCollege);
+        College.update(newCollege, {where: {collegeId: req.params.id}})
+        .then(reply => {
+            res.json({status: 'success', reply});
         });
     }
 
@@ -74,12 +74,12 @@ router.patch('/:id', (req, res) => {
     }
 
     let request = req.body;
-
-    if(request.image) {
-        persistTemporaryFile(request.image, 'playerImages')
+    console.log(request);
+    if(request.logoUrl) {
+        persistTemporaryFile(request.logoUrl, 'collegeLogos')
         .then(reply => {
             if(reply.status === 'success') {
-                request.image = reply.relativePath;
+                request.logoUrl = reply.relativePath;
 
                 // const PlayerNoBackground = new BackgroundRemove('public/'+request.image, 'Player');
 
@@ -88,15 +88,15 @@ router.patch('/:id', (req, res) => {
                 //     console.log(result);
                 // });
 
-                updatePlayer(request);
+                updateCollege(request);
             } else {
                 console.log(reply);
                 res.json({status: 'fail', reply});
             }
-        })
+        });
 
     } else {
-        updatePlayer(request);
+        updateCollege(request);
     }
 })
 
@@ -106,7 +106,7 @@ router.delete('/:id', (req, res) => {
         return;
     }
 
-    Player.destroy({where: {playerId: req.params.id}})
+    College.destroy({where: {collegeId: req.params.id}})
     .then(dbData => {
         res.json(dbData);
     })

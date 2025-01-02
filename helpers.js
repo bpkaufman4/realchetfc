@@ -1,6 +1,4 @@
 const fs = require('fs');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
 
 function persistTemporaryFile(fileName, targetDirectory = 'images') {
     return new Promise((resolve, reject) => {
@@ -14,4 +12,12 @@ function persistTemporaryFile(fileName, targetDirectory = 'images') {
     })
 }
 
-module.exports = { persistTemporaryFile };
+function getFlagEmoji(countryCode) {
+    const codePoints = countryCode
+        .toUpperCase()
+        .split('')
+        .map(char =>  127397 + char.charCodeAt());
+    return String.fromCodePoint(...codePoints);
+}
+
+module.exports = { persistTemporaryFile, getFlagEmoji };

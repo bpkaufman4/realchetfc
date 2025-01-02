@@ -4,15 +4,26 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Lineup</h5>
+                <h5 class="modal-title">Box Score</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <h5>Real Chet</h5>
+                        <input value="{{match.ourScore}}" type="number" class="form-control" id="ourScore">
+                    </div>
+                    <div class="col-6">
+                        <h5>{{match.opponent}}</h5>
+                        <input value="{{match.opponentScore}}" type="number" class="form-control" id="opponentScore">
+                    </div>
+                </div>
                 <table class="mb-3">
                     <thead>
                         <th>Player</th>
                         <th>Goals</th>
                         <th>Assists</th>
+                        <th>MVP</th>
                         <th></th>
                     </thead>
                     <tbody id="boxScoreCatch"></tbody>
@@ -37,6 +48,28 @@
 </div>
 
 <table>
+    <thead>
+        <tr>
+            <th>Player</th>
+            <th>Goals</th>
+            <th>Assists</th>
+            <th>MVP</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each boxScore}}
+            <tr>
+                <td>{{player.firstName}} {{player.lastName}}</td>
+                <td>{{goals}}</td>
+                <td>{{assists}}</td>
+                <td>
+                    {{#if mvp}}
+                        MVP
+                    {{/if}}
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
 </table>
 
 <script src="{{basepath}}javascript/admin-match.js"></script>

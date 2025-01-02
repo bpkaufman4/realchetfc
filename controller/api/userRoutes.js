@@ -18,7 +18,7 @@ router.post('/login', (req, res) => {
             req.session.loggedIn = true;
             req.session.admin = (reply.userType == 'ADMIN');
             returnValue.status = 'success';
-            returnValue.target = (reply.userType == 'ADMIN') ? 'admin' : '/';
+            returnValue.target = (reply.userType == 'ADMIN') ? 'admin-players' : '/';
             res.json(returnValue);
         }
     })

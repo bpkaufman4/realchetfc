@@ -40,7 +40,12 @@ BoxScore.init(
             allowNull: false,
             defaultValue: 0
         },
-        notes: DataTypes.STRING
+        notes: DataTypes.STRING,
+        mvp: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        }
     },
     {
         sequelize,

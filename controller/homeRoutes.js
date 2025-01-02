@@ -4,6 +4,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { Position, Player, Match, BoxScore, College } = require('../models');
 const sequelize = require('../config/connection');
+const { error } = require('console');
 router.get('/', (req, res) => {
     Player.findAll({
         attributes: {
@@ -58,21 +59,28 @@ router.get('/admin-players', (req, res) => {
         res.redirect('login');
         return;
     }
+
+    const colleges = College.findAll()
+    .then(dbData => {
+        let dbDataClean = dbData.map(position => position.get({plain: true}));
+        return dbDataClean;
+    });
+
     const positions = Position.findAll()
     .then(dbData => {
         let dbDataClean = dbData.map(position => position.get({plain: true}));
         return dbDataClean;
     });
     
-    const players = Player.findAll({include: Position})
+    const players = Player.findAll({include: [Position, College]})
     .then(dbData => {
         let dbDataClean = dbData.map(player => player.get({plain: true}));
         return dbDataClean;
     })
 
-    Promise.all([positions, players])
+    Promise.all([positions, players, colleges])
     .then(data => {
-        res.render('admin-players', {layout: 'admin', data: {positions: data[0], players: data[1]}});
+        res.render('admin-players', {layout: 'admin', data: {positions: data[0], players: data[1], colleges: data[2]}});
     })
 });
 
@@ -99,15 +107,68 @@ router.get('/admin-match/:id', (req, res) => {
         return;
     }
 
-    Match.findOne({where: {matchId: req.params.id}, include: {model: BoxScore, include: Player}})
+    const match = Match.findOne({where: {matchId: req.params.id}, include: {model: BoxScore, include: Player}})
     .then(dbData => {
         if(!dbData) {
             res.redirect('admin-matches');
             return;
         }
         const dbDataClean = dbData.get({plain: true});
-        res.render('admin-match', {layout: 'admin', match: dbDataClean});
+        return dbDataClean;
     });
+
+    const boxScore = BoxScore.findAll({where: {matchId: req.params.id}, include: {model: Player}})
+    .then(dbData => {
+        const dbDataClean = dbData.map(boxScore => boxScore.get({plain: true}));
+        return dbDataClean;
+    })
+
+    Promise.all([match, boxScore])
+    .then(reply => {
+        res.render('admin-match', {layout: 'admin', match: reply[0], boxScore: reply[1]});
+    })
 });
+
+router.get('/settings', (req, res) => {
+    if(!req.session.admin) {
+        res.redirect('login');
+        return;
+    }
+    
+    const collegeData = College.findAll();
+    const positionData = Position.findAll();
+
+    Promise.all([collegeData, positionData]).then(data => {
+        const colleges = data[0].map(college => college.get({plain: true}));
+        const positions = data[1].map(position => position.get({plain: true}));
+        res.render('settings', {layout: 'admin', colleges, positions});
+    })
+})
+
+router.get('/player/:id', (req, res) => {
+    Player.findOne({
+        where: {playerId: req.params.id},
+        include: [Position, College],
+        attributes: {
+            include: [
+                [sequelize.literal(`(SELECT COUNT(*) FROM boxScore WHERE boxScore.playerId = player.playerId)`), 'games'],
+                [sequelize.literal(`ifnull((SELECT SUM(totalGoals.goals) from boxScore as totalGoals where totalGoals.playerId = player.playerId), 0)`), 'goals'],
+                [sequelize.literal(`ifnull((SELECT SUM(totalAssists.assists) from boxScore as totalAssists where totalAssists.playerId = player.playerId), 0)`), 'assists']
+            ]
+        }
+    })
+    .then(dbData => {
+        const dbDataClean = dbData.get({plain: true});
+        return dbDataClean;
+    })
+    .then(player => {
+        console.log(player);
+        res.render('player', {player});
+    })
+    .catch(err => {
+        console.error(err);
+        res.redirect('/');
+    })
+})
 
 module.exports = router;

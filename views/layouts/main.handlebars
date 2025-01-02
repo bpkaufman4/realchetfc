@@ -16,13 +16,19 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <script src="{{basepath}}javascript/helpers.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
     </head>
     <body>
         <nav class="navbar">
             <div class="container">
-                <a href="/" class="navbar-brand">
-                    <img class="logo" src="{{basepath}}images/logo-transparent.png" alt="Real Chet FC Logo" height="40px">
-                </a>
+                <div class="d-flex align-items-center gap-3">
+                    <a href="/" class="navbar-brand" style="color: white;">
+                        <img class="logo" src="{{basepath}}images/logo-transparent.png" alt="Real Chet FC Logo" height="40px">
+                    </a>
+                    <a class="nav-link" href="{{basepath}}">Home</a>
+                    <a class="nav-link" href="{{basepath}}roster">Roster</a>
+                    {{!-- <a class="nav-link" href="{{basepath}}schedule">Schedule</a> --}}
+                </div>
                 <div>Est. 2017</div>
             </div>
         </nav>

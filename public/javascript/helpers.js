@@ -3,7 +3,7 @@ function getElem(id) {
 }
 
 function getVal(id, ifFalse = null) {
-    return (getElem(id).value) ? getElem(id).value : ifFalse;
+    return (getElem(id) && getElem(id).value) ? getElem(id).value : ifFalse;
 }
 
 function setVal(id, value) {

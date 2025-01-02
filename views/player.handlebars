@@ -1,0 +1,43 @@
+
+<section class="d-flex container">
+    <img src="{{basepath}}{{#if player.image}}{{player.image}}{{else}}images/logo.png{{/if}}">
+    <div>
+        <h2>{{player.number}}</h2>
+        <h2>{{player.firstName}} {{player.lastName}}</h2>
+        <div class="row">
+            {{#if player.position.name}}
+                <p class="col-6"><span>Position:</span> {{player.position.name}}</p>
+            {{/if}}
+            {{#if player.heightFeet}}
+                {{#if player.heightInches}}
+                    <p class="col-6"><span>Height:</span> {{getHeight player.heightFeet player.heightInches}}</p>
+                {{/if}}
+            {{/if}}
+
+            {{#if player.college.name}}
+                <p class="col-6"><span>College:</span> {{player.college.name}}</p>
+            {{/if}}
+            {{#if player.countryCode}}
+                <p class="col-6"><span>Country:</span>{{{getFlagEmoji player.countryCode}}} {{player.countryCode}}</p>
+            {{/if}}
+            {{#if player.birthday}}
+                <p class="col-6"><span>Age:</span> {{getAge player.birthday}}</p>
+            {{/if}}
+            {{#if player.hometown}}
+                <p class="col-6"><span>Hometown:</span> {{player.hometown}}</p>
+            {{/if}}
+        </div>
+    </div>
+</section>
+<section class="container">
+    <div class="mini-nav d-flex">
+        <div class="w-auto active" data-target="aboutContainer">About</div>
+        <div class="w-auto" data-target="statsContainer">Stats</div>
+    </div>
+    <div class="mini-container active" id="aboutContainer">{{player.bio}}</div>
+    <div class="mini-container" id="statsContainer">
+        <div>Appearances: {{player.games}}</div>
+        <div>Goals: {{player.goals}}</div>
+        <div>Assists: {{player.assists}}</div>
+    </div>
+</section>

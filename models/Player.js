@@ -45,7 +45,8 @@ Player.init(
                 model: College,
                 key: 'collegeId'
             }
-        }
+        },
+        countryCode: DataTypes.STRING
     },
     {
         sequelize,

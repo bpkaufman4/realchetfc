@@ -1,0 +1,109 @@
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+<link rel="stylesheet" href="{{basepath}}styles/settings.css" type="text/css" />
+<form action="{{basepath}}uploadFile" method="post" class="dropzone" style="display: none;" id="dropzone"></form>
+
+<div class="modal fade" id="addPositionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" name="positionId" id="positionId">
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="positionName" class="col-form-label">Name:*</label>
+                            <input type="text" class="form-control" id="positionName">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="positionAbbreviation" class="col-form-label">Abbreviation:*</label>
+                            <input type="text" class="form-control" id="positionAbbreviation">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="savePositionBtn" type="button" data-bs-dismiss="modal" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addCollegeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" name="collegeId" id="collegeId">
+                    <input type="hidden" name="image" id="image">
+                    <div class="d-flex justify-content-center">
+                        <div class="college-logo" id="collegeLogo">Add Logo</div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="collegeName" class="col-form-label">Name:*</label>
+                            <input type="text" class="form-control" id="collegeName">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="abbreviation" class="col-form-label">Abbreviation:*</label>
+                            <input type="text" class="form-control" id="collegeAbbreviation">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="saveCollegeBtn" type="button" data-bs-dismiss="modal" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-6">
+        <div class="d-flex justify-content-between py-3">
+            <h2 class="w-auto">Colleges</h2>
+            <button class="btn btn-primary" id="addCollegeBtn" data-bs-toggle="modal" data-bs-target="#addCollegeModal">Add College</button>
+        </div>
+        <table>
+            <tbody>
+                {{#each colleges}}
+                    <tr>
+                        <td><img class="college-logo table" src="{{#if logoUrl}}{{logoUrl}}{{else}}images/logo-transparent.png{{/if}}"></td>
+                        <td>{{name}}</td>
+                        <td>{{abbreviation}}</td>
+                        <td><button class="btn btn-primary edit-college-button" data-bs-toggle="modal" data-bs-target="#addCollegeModal"  data-college-id="{{collegeId}}">Edit</button></td>
+                        <td><button class="btn btn-primary delete-college-button" data-college-id="{{collegeId}}">Delete</button></td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-6">
+        <div class="d-flex justify-content-between py-3">
+            <h2 class="w-auto">Positions</h2>
+            <button class="btn btn-primary" id="addPositionBtn" data-bs-toggle="modal" data-bs-target="#addPositionModal">Add Position</button>
+        </div>
+        <table>
+            <tbody>
+                {{#each positions}}
+                    <tr>
+                        <td>{{name}}</td>
+                        <td>{{abbreviation}}</td>
+                        <td><button class="btn btn-primary edit-position-button" data-bs-toggle="modal" data-bs-target="#addPositionModal"  data-position-id="{{positionId}}">Edit</button></td>
+                        <td><button class="btn btn-primary delete-position-button" data-position-id="{{positionId}}">Delete</button></td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="{{basepath}}javascript/settings.js"></script>

@@ -1,6 +1,8 @@
+
 var imageChanged = false;
 var saveMode = 'add';
 var DateTime = luxon.DateTime;
+
 getElem('addPlayerBtn').addEventListener('click', () => {
     saveMode = 'add';
     getElem('savePlayerBtn').innerHTML = 'Add Player';
@@ -25,8 +27,9 @@ getElem('savePlayerBtn').addEventListener('click', () => {
     const homeTown = getVal('homeTown');
     const birthday = getVal('birthday');
     const collegeId = getVal('collegeId');
+    const countryCode = getVal('countryCode');
 
-    let request = {firstName, lastName, positionId, bio, number, heightFeet, heightInches, homeTown, birthday, collegeId};
+    let request = {firstName, lastName, positionId, bio, number, heightFeet, heightInches, homeTown, birthday, collegeId, countryCode};
 
     if(imageChanged) request.image = image;
 
@@ -46,9 +49,10 @@ getElem('savePlayerBtn').addEventListener('click', () => {
             return  response.json();
         })
         .then(() => {
-            window.location.reload();
+            // window.location.reload();
         });
     } else {
+        console.log(request);
         fetch('api/player/'+getVal('playerId'), {
             method: 'PATCH',
             headers: {
