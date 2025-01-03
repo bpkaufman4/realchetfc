@@ -1,12 +1,11 @@
 :root {
     --card-multiplier: .75;
-    --overlay-base: -44px;
+    --overlay-base: -24px;
 }
 
 @media (min-width: 768px) {
     :root {
         --card-multiplier: 1;
-        --overlay-base: -24px;
     }
 }
 
@@ -34,13 +33,19 @@
 .stats-right {text-align: left;}
 .last-name, .stats {text-align: center;}
 .icons {width: calc(50% - calc(5px * var(--card-multiplier))); padding-right: calc(20px * var(--card-multiplier));}
-.icons img {width: auto; height: 100%;}
+.icons img {
+    width: auto; height: 100%;
+    -webkit-filter: drop-shadow(0px 0px 3px rgba(255, 0, 0, 1));
+    filter: drop-shadow(0px 0px 3px rgba(255, 0, 0, 1));
+}
 .bottom {height: calc(75px * var(--card-multiplier)); padding-top: calc(11px * var(--card-multiplier)); padding-right: calc(15px * var(--card-multiplier)); font-size: calc(10px * var(--card-multiplier));}
 .icons > * {height: 25%; font-size: calc(14px * var(--card-multiplier));}
 
+.navbar {position: sticky; top: 0; background: var(--bs-body-bg); z-index: 1;}
+
 ::-webkit-scrollbar{
     height: 8px;
-    width: 4px;
+    width: 6px;
     background: var(--bs-body-bg);
 }
 ::-webkit-scrollbar-thumb:horizontal{
