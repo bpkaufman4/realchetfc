@@ -1,6 +1,6 @@
 
 <section class="d-flex container">
-    <img src="{{basepath}}{{#if player.image}}{{player.image}}{{else}}images/logo.png{{/if}}">
+    <img src="{{#if player.image}}{{player.image}}{{else}}{{basepath}}images/logo.png{{/if}}">
     <div>
         <h2>{{player.number}}</h2>
         <h2>{{player.firstName}} {{player.lastName}}</h2>

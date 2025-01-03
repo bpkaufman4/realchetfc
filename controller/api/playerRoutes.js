@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const { Player } = require('../../models');
-const { persistTemporaryFile } = require('../../helpers');
-const BackgroundRemove = require('../../eden');
+const uploadCloudFlare = require('../../cloudflare');
 
 router.get('/:id', (req, res) => {
     Player.findOne({where: {playerId: req.params.id}})
@@ -19,6 +18,7 @@ router.get('/:id', (req, res) => {
     })
 })
 router.post('/create', (req, res) => {
+    console.log(req.body);
 
     function createPlayer(newPlayer) {
         Player.create(newPlayer)
@@ -36,12 +36,12 @@ router.post('/create', (req, res) => {
 
     if(request.image) {
 
-        const PlayerNoBackground = new BackgroundRemove(request.image);
+        // const PlayerNoBackground = new BackgroundRemove(request.image);
 
-        persistTemporaryFile(request.image, 'playerImages')
+        uploadCloudFlare('./public/tempImages/'+ request.image)
         .then(reply => {
-            if(reply.status === 'success') {
-                request.image = reply.relativePath;
+            if(reply.success) {
+                request.image = reply.result.variants[0];
                 createPlayer(request);
             } else {
                 console.log(reply);
@@ -76,18 +76,10 @@ router.patch('/:id', (req, res) => {
     let request = req.body;
 
     if(request.image) {
-        persistTemporaryFile(request.image, 'playerImages')
+        uploadCloudFlare('./public/tempImages/'+ request.image)
         .then(reply => {
-            if(reply.status === 'success') {
-                request.image = reply.relativePath;
-
-                // const PlayerNoBackground = new BackgroundRemove('public/'+request.image, 'Player');
-
-                // PlayerNoBackground.launch()
-                // .then(result => {
-                //     console.log(result);
-                // });
-
+            if(reply.success) {
+                request.image = reply.result.variants[0];
                 updatePlayer(request);
             } else {
                 console.log(reply);
