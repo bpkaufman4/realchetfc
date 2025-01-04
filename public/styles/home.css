@@ -1,5 +1,5 @@
 :root {
-    --card-multiplier: .75;
+    --card-multiplier: 1;
     --overlay-base: -24px;
 }
 
@@ -41,7 +41,6 @@
 .bottom {height: calc(75px * var(--card-multiplier)); padding-top: calc(11px * var(--card-multiplier)); padding-right: calc(15px * var(--card-multiplier)); font-size: calc(10px * var(--card-multiplier));}
 .icons > * {height: 25%; font-size: calc(14px * var(--card-multiplier));}
 
-.navbar {position: sticky; top: 0; background: var(--bs-body-bg); z-index: 1;}
 
 
 ::-webkit-scrollbar{

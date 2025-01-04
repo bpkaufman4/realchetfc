@@ -1,43 +1,48 @@
-
-<section class="d-flex container">
-    <img src="{{#if player.image}}{{player.image}}{{else}}{{basepath}}images/logo.png{{/if}}">
+<link rel="stylesheet" href="{{{basepath}}}styles/player.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<section class="d-flex container p-3">
     <div>
-        <h2>{{player.number}}</h2>
-        <h2>{{player.firstName}} {{player.lastName}}</h2>
-        <div class="row">
+        <div class="row px-3">
+            <img src="{{#if player.image}}{{player.image}}{{else}}{{basepath}}images/logo.png{{/if}}" class="col-3 player-image px-0">
+            <div class="col-9 d-flex flex-column justify-content-evenly">
+                <h2 class="mb-0 number">{{player.number}}</h2>
+                <h2 class="mb-0">{{player.firstName}}<br>{{player.lastName}}</h2>
+            </div>
+        </div>
+        <div class="row px-3">
             {{#if player.position.name}}
-                <p class="col-6"><span>Position:</span> {{player.position.name}}</p>
+                <div class="col-12 py-2 border-bottom"><strong class="me-1">Position:</strong> {{player.position.name}}</div>
             {{/if}}
             {{#if player.heightFeet}}
                 {{#if player.heightInches}}
-                    <p class="col-6"><span>Height:</span> {{getHeight player.heightFeet player.heightInches}}</p>
+                    <div class="col-12 py-2 border-bottom"><strong class="me-1">Height:</strong> {{getHeight player.heightFeet player.heightInches}}</div>
                 {{/if}}
             {{/if}}
-
+            {{#if player.birthday}}
+                <div class="col-12 py-2 border-bottom"><strong class="me-1">Age:</strong> {{getAge player.birthday}}</div>
+            {{/if}}
+            {{#if player.homeTown}}
+                <div class="col-12 py-2 border-bottom"><strong class="me-1">Hometown:</strong> {{player.homeTown}}</div>
+            {{/if}}
             {{#if player.college.name}}
-                <p class="col-6"><span>College:</span> {{player.college.name}}</p>
+                <div class="col-12 py-2 border-bottom"><strong class="me-1">College:</strong> {{player.college.name}}</div>
             {{/if}}
             {{#if player.countryCode}}
-                <p class="col-6"><span>Country:</span>{{{getFlagEmoji player.countryCode}}} {{player.countryCode}}</p>
-            {{/if}}
-            {{#if player.birthday}}
-                <p class="col-6"><span>Age:</span> {{getAge player.birthday}}</p>
-            {{/if}}
-            {{#if player.hometown}}
-                <p class="col-6"><span>Hometown:</span> {{player.hometown}}</p>
+                <div class="col-12 py-2 border-bottom"><strong class="me-1">Country:</strong> {{{getFlagEmoji player.countryCode}}} {{player.countryCode}}</div>
             {{/if}}
         </div>
     </div>
 </section>
-<section class="container">
-    <div class="mini-nav d-flex">
-        <div class="w-auto active" data-target="aboutContainer">About</div>
-        <div class="w-auto" data-target="statsContainer">Stats</div>
+<section class="container p-3">
+    <div class="mini-nav d-flex row px-3 mx-0">
+        <div class="w-auto active mini-nav-option d-flex justiy-content-center gap-1 py-1" data-target="aboutContainer"><span class="material-icons">person</span><span>About</span></div>
+        <div class="w-auto mini-nav-option d-flex justify-content-center gap-1 py-1" data-target="statsContainer"><span class="material-icons">leaderboard</span><span>Stats</span></div>
     </div>
-    <div class="mini-container active" id="aboutContainer">{{player.bio}}</div>
-    <div class="mini-container" id="statsContainer">
+    <div class="mini-container active p-3" id="aboutContainer">{{player.bio}}</div>
+    <div class="mini-container p-3" id="statsContainer">
         <div>Appearances: {{player.games}}</div>
         <div>Goals: {{player.goals}}</div>
         <div>Assists: {{player.assists}}</div>
     </div>
 </section>
+<script src="{{{basepath}}}javascript/player.js"></script>

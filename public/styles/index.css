@@ -70,3 +70,12 @@ textarea {
     color: #fff;
     opacity: .7;
 }
+
+.navbar {
+    position: sticky;
+    top: 0;
+    background:
+    var(--bs-body-bg);
+    z-index: 1;
+    border-bottom: 1px solid white;
+}

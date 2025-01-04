@@ -1,0 +1,22 @@
+.player-image {
+    object-fit: cover;
+}
+
+.number {
+    width: fit-content;
+    padding: 0px 15px;
+    background: var(--primaryColor);
+}
+
+.mini-nav {
+    border-bottom: 2px solid var(--secondaryColor);
+}
+
+.mini-nav-option.active {
+    background-color: var(--secondaryColor);
+    color: black;
+}
+
+.mini-container:not(.active) {
+    display: none;
+}
