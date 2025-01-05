@@ -9,17 +9,22 @@ router.get('/', (req, res) => {
     Player.findAll({
         attributes: {
             include: [
-                [sequelize.literal(`(SELECT COUNT(*) FROM boxScore WHERE boxScore.playerId = player.playerId)`), 'games'],
-                [sequelize.literal(`ifnull((SELECT SUM(totalGoals.goals) from boxScore as totalGoals where totalGoals.playerId = player.playerId), 0)`), 'goals'],
-                [sequelize.literal(`ifnull((SELECT SUM(totalAssists.assists) from boxScore as totalAssists where totalAssists.playerId = player.playerId), 0)`), 'assists']
+                [sequelize.literal(`((SELECT COUNT(*) FROM boxScore WHERE boxScore.playerId = player.playerId) + player.gamesModifier)`), 'games'],
+                [sequelize.literal(`(ifnull((SELECT SUM(totalGoals.goals) from boxScore as totalGoals where totalGoals.playerId = player.playerId), 0) + player.goalsModifier)`), 'goals'],
+                [sequelize.literal(`(ifnull((SELECT SUM(totalAssists.assists) from boxScore as totalAssists where totalAssists.playerId = player.playerId), 0) + player.assistsModifier)`), 'assists']
             ]
         },
-        include: [College, Position]
+        include: [College, Position],
+        order : [['created', 'ASC']]
     })
     .then(dbData => {
         const templateData = {players: dbData.map(player => player.get({plain: true}))};
         console.log(templateData);
         res.render('home', templateData);
+    })
+    .catch(err => {
+        console.log(err);
+        res.render('404');
     })
 });
 
@@ -159,9 +164,9 @@ router.get('/player/:id', (req, res) => {
         include: [Position, College],
         attributes: {
             include: [
-                [sequelize.literal(`(SELECT COUNT(*) FROM boxScore WHERE boxScore.playerId = player.playerId)`), 'games'],
-                [sequelize.literal(`ifnull((SELECT SUM(totalGoals.goals) from boxScore as totalGoals where totalGoals.playerId = player.playerId), 0)`), 'goals'],
-                [sequelize.literal(`ifnull((SELECT SUM(totalAssists.assists) from boxScore as totalAssists where totalAssists.playerId = player.playerId), 0)`), 'assists']
+                [sequelize.literal(`((SELECT COUNT(*) FROM boxScore WHERE boxScore.playerId = player.playerId) + player.gamesModifier)`), 'games'],
+                [sequelize.literal(`(ifnull((SELECT SUM(totalGoals.goals) from boxScore as totalGoals where totalGoals.playerId = player.playerId), 0) + player.goalsModifier)`), 'goals'],
+                [sequelize.literal(`(ifnull((SELECT SUM(totalAssists.assists) from boxScore as totalAssists where totalAssists.playerId = player.playerId), 0) + player.assistsModifier)`), 'assists']
             ]
         }
     })
@@ -177,6 +182,24 @@ router.get('/player/:id', (req, res) => {
         console.error(err);
         res.redirect('/');
     })
-})
+});
+
+router.get('/roster', (req, res) => {
+    Player.findAll({
+        order: [['number', 'ASC']],
+        include: [Position, College]
+    })
+    .then(dbData => {
+        const dbDataClean = dbData.map(player => player.get({plain: true}));
+        return dbDataClean;
+    })
+    .then(players => {
+        console.log(players);
+        res.render('roster', {players});
+    })
+    .catch(err => {
+        res.render('404');
+    })
+});
 
 module.exports = router;
