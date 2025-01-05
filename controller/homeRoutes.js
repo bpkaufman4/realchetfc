@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
     })
     .then(dbData => {
         const templateData = {players: dbData.map(player => player.get({plain: true}))};
-        console.log(templateData);
+        // console.log(templateData);
         res.render('home', templateData);
     })
     .catch(err => {
@@ -175,7 +175,7 @@ router.get('/player/:id', (req, res) => {
         return dbDataClean;
     })
     .then(player => {
-        console.log(player);
+        // console.log(player);
         res.render('player', {player});
     })
     .catch(err => {
@@ -194,10 +194,27 @@ router.get('/roster', (req, res) => {
         return dbDataClean;
     })
     .then(players => {
-        console.log(players);
         res.render('roster', {players});
     })
     .catch(err => {
+        res.render('404');
+    })
+});
+
+router.get('/schedule', (req, res) => {
+    Match.findAll({
+        order: [['startTime', 'DESC']]
+    })
+    .then(dbData => {
+        const dbDataClean = dbData.map(match => match.get({plain: true}));
+        return dbDataClean;
+    })
+    .then(matches => {
+        console.log(matches);
+        res.render('schedule', {matches});
+    })
+    .catch(err => {
+        console.log(err);
         res.render('404');
     })
 });

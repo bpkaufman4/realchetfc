@@ -39,16 +39,6 @@
 
 
 
-::-webkit-scrollbar{
-    height: 8px;
-    width: 6px;
-    background: var(--bs-body-bg);
-}
-::-webkit-scrollbar-thumb:horizontal{
-    background: gray;
-    border-radius: 10px;
-}
-
 @media (min-width: 1024px) {
     .hero {height: 350px;}
 }

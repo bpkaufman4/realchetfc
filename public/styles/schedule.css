@@ -1,0 +1,28 @@
+.match-card {
+    border-radius: 10px;
+    border: 1px solid #aaa;
+    transition: transform .1s;
+    cursor: pointer;
+}
+
+.match-card:hover {
+    transform: scale(1.01);
+}
+
+.vs {
+    background: var(--primaryColor);
+    font-weight: 900;
+    position: relative;
+    top: -3px;
+}
+
+.opponent {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+@media (min-width: 768px) {
+    .border-md-0 {
+        border: none !important;
+    }
+}

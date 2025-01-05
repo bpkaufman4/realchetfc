@@ -43,10 +43,10 @@ hbs.handlebars.registerHelper('evaluateMatchResult', match => {
     const now = DateTime.now();
     const startTime = DateTime.fromJSDate(match.startTime);
 
-    if(now < startTime) return 'Result Pending';
+    if(now < startTime) return 'TBD';
 
     const result = (match.ourScore > match.opponentScore) ? 'W' : (match.ourScore == match.opponentScore) ? 'D' : 'L';
-    return `${match.ourScore || 0} - ${match.opponentScore || 0} ${result}`;
+    return `${result}, ${match.ourScore || 0} - ${match.opponentScore || 0}`;
 });
 
 module.exports = hbs;

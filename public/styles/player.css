@@ -11,6 +11,7 @@
 
 .mini-nav {
     border-bottom: 2px solid var(--secondaryColor);
+    cursor: pointer;
 }
 
 .mini-nav-option.active {

@@ -1,0 +1,18 @@
+<link rel="stylesheet" href="{{basepath}}styles/schedule.css">
+<section class="container p-3">
+    <div class="line mb-5 mt-4">
+        <h1>Schedule</h1>
+    </div>
+    <div class="d-flex flex-column flex-row gap-3">
+        {{#each matches}}
+            <div data-match-id="{{matchId}}" class="col-12 match-card row">
+                <div class="p-3 col-12 col-md-10">
+                    <div class="mb-2"><strong>{{dateTimeFormat startTime 'MMM d (EEE)'}}</strong>  /  {{dateTimeFormat startTime 't'}}  /  {{location}}</div>
+                    <div><span class="vs me-2 px-2 py-1"><i>vs</i></span><span class="opponent">{{opponent}}</span></div>
+                </div>
+                <div class="match-result p-3 border-top border-md-0 col-12 col-md-2"><i>{{evaluateMatchResult this}}</i></div>
+            </div>
+        {{/each}}
+    </div>
+</section>
+<script src="{{basepath}}javascript/schedule.js"></script>
