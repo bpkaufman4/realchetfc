@@ -186,7 +186,7 @@ router.get('/player/:id', (req, res) => {
 
 router.get('/roster', (req, res) => {
     Player.findAll({
-        order: [['number', 'ASC']],
+        order: [[sequelize.literal(`(player.number * 1)`), 'ASC']],
         include: [Position, College]
     })
     .then(dbData => {
