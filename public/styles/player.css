@@ -1,5 +1,6 @@
 .player-image {
     object-fit: cover;
+    max-height: 245px;
 }
 
 .number {

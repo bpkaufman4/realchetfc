@@ -1,36 +1,38 @@
 <link rel="stylesheet" href="{{{basepath}}}styles/player.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<section class="d-flex container p-3">
-    <div>
-        <div class="row px-3">
-            <img src="{{#if player.image}}{{player.image}}{{else}}{{basepath}}images/logo.png{{/if}}" class="col-3 player-image px-0">
-            <div class="col-9 d-flex flex-column justify-content-evenly">
-                <h2 class="mb-0 number">{{player.number}}</h2>
-                <h2 class="mb-0">{{player.firstName}}<br>{{player.lastName}}</h2>
-            </div>
+<section class="container p-3 d-md-flex justify-content-md-between info-section">
+    <div class="row px-3 col-md-3">
+        <img src="{{#if player.image}}{{player.image}}{{else}}{{basepath}}images/logo-transparent.png{{/if}}" class="col-3 player-image px-0 col-md-12">
+        <div class="col-9 d-flex flex-column justify-content-center gap-2 d-md-none">
+            <h2 class="mb-0 number">{{player.number}}</h2>
+            <h2 class="mb-0">{{player.firstName}}<br>{{player.lastName}}</h2>
         </div>
-        <div class="row px-3">
-            {{#if player.position.name}}
-                <div class="col-12 py-2 border-bottom"><strong class="me-1">Position:</strong> {{player.position.name}}</div>
-            {{/if}}
-            {{#if player.heightFeet}}
-                {{#if player.heightInches}}
-                    <div class="col-12 py-2 border-bottom"><strong class="me-1">Height:</strong> {{getHeight player.heightFeet player.heightInches}}</div>
-                {{/if}}
-            {{/if}}
-            {{#if player.birthday}}
-                <div class="col-12 py-2 border-bottom"><strong class="me-1">Age:</strong> {{getAge player.birthday}}</div>
-            {{/if}}
-            {{#if player.homeTown}}
-                <div class="col-12 py-2 border-bottom"><strong class="me-1">Hometown:</strong> {{player.homeTown}}</div>
-            {{/if}}
-            {{#if player.college.name}}
-                <div class="col-12 py-2 border-bottom"><strong class="me-1">College:</strong> {{player.college.name}}</div>
-            {{/if}}
-            {{#if player.countryCode}}
-                <div class="col-12 py-2 border-bottom"><strong class="me-1">Country:</strong> {{{getFlagEmoji player.countryCode}}} {{player.countryCode}}</div>
-            {{/if}}
+    </div>
+    <div class="row px-3 col-md-9 align-content-center">
+        <div class="col-9 d-md-flex d-none p-0">
+            <h2 class="mb-0 me-3 number">{{player.number}}</h2>
+            <h2 class="mb-0">{{player.firstName}} {{player.lastName}}</h2>
         </div>
+        {{#if player.position.name}}
+            <div class="col-12 col-lg-6 py-2 border-bottom"><strong class="me-1">Position:</strong> {{player.position.name}}</div>
+        {{/if}}
+        {{#if player.heightFeet}}
+            {{#if player.heightInches}}
+                <div class="col-12 col-lg-6 py-2 border-bottom"><strong class="me-1">Height:</strong> {{getHeight player.heightFeet player.heightInches}}</div>
+            {{/if}}
+        {{/if}}
+        {{#if player.birthday}}
+            <div class="col-12 col-lg-6 py-2 border-bottom"><strong class="me-1">Age:</strong> {{getAge player.birthday}}</div>
+        {{/if}}
+        {{#if player.homeTown}}
+            <div class="col-12 col-lg-6 py-2 border-bottom"><strong class="me-1">Hometown:</strong> {{player.homeTown}}</div>
+        {{/if}}
+        {{#if player.college.name}}
+            <div class="col-12 col-lg-6 py-2 border-bottom"><strong class="me-1">College:</strong> {{player.college.name}}</div>
+        {{/if}}
+        {{#if player.countryCode}}
+            <div class="col-12 col-lg-6 py-2 border-bottom"><strong class="me-1">Country:</strong> {{{getFlagEmoji player.countryCode}}} {{player.countryCode}}</div>
+        {{/if}}
     </div>
 </section>
 <section class="container p-3">
