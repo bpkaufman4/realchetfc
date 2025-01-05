@@ -21,6 +21,7 @@ router.get('/:id', (req, res) => {
 router.post('/create', (req, res) => {
 
     function createCollege(newCollege) {
+        console.log(2);
         College.create(newCollege)
         .then(result => {
             res.json(result);
@@ -43,8 +44,9 @@ router.post('/create', (req, res) => {
 
         uploadCloudFlare('./public/tempImages/'+ request.logoUrl)
         .then(reply => {
+            console.log(reply.success);
             if(reply.success) {
-                request.logoUrl = result.variants[0];
+                request.logoUrl = reply.result.variants[0];
                 createCollege(request);
             } else {
                 console.log(reply);

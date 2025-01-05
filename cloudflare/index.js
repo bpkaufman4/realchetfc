@@ -4,8 +4,6 @@ const { default: axios } = require('axios');
 
 function uploadCloudFlare(filePath) {
 
-    console.log(filePath);
-
     const cloudflareFormData = new FormData();
 
     const file = fs.createReadStream(filePath);
@@ -21,6 +19,7 @@ function uploadCloudFlare(filePath) {
             }
         })
         .then(({data}) => {
+            console.log(data);
             resolve(data);
         })
         .catch(err => {
