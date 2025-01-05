@@ -5,7 +5,7 @@
 
 @media (min-width: 768px) {
     :root {
-        --card-multiplier: 1;
+        --card-multiplier: 1.25;
     }
 }
 
@@ -13,10 +13,6 @@
 .card {background: rgb(255 255 255 / 20%); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px;}
 .after-hero {text-align: center;font-size: 32px;}
 .overlay-top {position: relative; top: calc(var(--overlay-base) - 20px); margin-bottom: -44px;}
-
-.line {text-align: center;}
-.line h1 {width: fit-content; margin: auto; padding: 0 20px; background-color: var(--bs-body-bg); position: relative;}
-.line::after {content:''; height: 3px; width: 100%; background-color: var(--primaryColor); display: block; margin-top: -1.25rem;}
 
 .player-card {width: calc(150px * var(--card-multiplier)); height: calc(207px * var(--card-multiplier)); background-image: url('../images/fifaPlayerCard.png'); background-repeat: no-repeat; background-size: contain; padding: calc(20px * var(--card-multiplier)) calc(15px * var(--card-multiplier)); padding-right: 0px; display: inline-block; margin-right: calc(10px * var(--card-multiplier)); transition: transform .1s; cursor: pointer;}
 .player-card:hover {transform: scale(1.1);}

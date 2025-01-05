@@ -79,3 +79,24 @@ textarea {
     z-index: 1;
     border-bottom: 1px solid white;
 }
+
+
+.line {
+    text-align: center;
+}
+
+.line h1 {
+    width: fit-content;
+    margin: auto;
+    padding: 0 20px;
+    background-color: var(--bs-body-bg);
+    position: relative;
+}
+.line::after {
+    content:'';
+    height: 3px;
+    width: 100%;
+    background-color: var(--primaryColor);
+    display: block;
+    margin-top: -1.25rem;
+}

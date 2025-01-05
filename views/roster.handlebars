@@ -1,0 +1,44 @@
+<link rel="stylesheet" href="{{basepath}}styles/roster.css">
+<section class="container p-3">
+    <div class="line mb-5 mt-4">
+        <h1>Roster</h1>
+    </div>
+    <div class="d-flex flex-column flex-row gap-3 d-sm-none">
+        {{#each players}}
+            <div data-player-id="{{playerId}}" class="col-12 player-card h-auto">
+                <div class="d-flex">
+                    <div style="background-image: url('{{#if image}}{{image}}{{else}}{{basepath}}images/logo-transparent.png{{/if}}'); background-size: cover; background-position: center;" class="mob-image"></div>
+                    <div class="d-flex flex-column w-100 gap-2 p-3">
+                        <div class="d-flex justify-content-between">
+                            <div><strong>{{lastName}}</strong>, <span>{{firstName}}</span></div>
+                            <div><strong>{{number}}</strong></div>
+                        </div>
+                        <div>{{position.abbreviation}}</div>
+                        <div>{{getHeight heightFeet heightInches}} / {{getAge birthday}}</div>
+                        <div>{{homeTown}} / {{college.name}}</div>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    <div class="row d-none d-sm-flex">
+        {{#each players}}
+            <div data-player-id="{{playerId}}" class="col-6 col-md-4 col-lg-3 mb-4">
+                <div class=" player-card">
+                    <div style="background-image: url('{{#if image}}{{image}}{{else}}{{basepath}}images/logo-transparent.png{{/if}}');" class="ratio ratio-1x1 img">
+                        <div class="number">{{number}}</div>
+                    </div>
+                    <div class="p-3">
+                        <div class="font-1">{{firstName}}</div>
+                        <div class="font-2">{{lastName}}</div>
+                        <div class="separator my-1"></div>
+                        <div class="font-1">{{position.abbreviation}}</div>
+                        <div class="font-1">{{getHeight heightFeet heightInches}} / {{getAge birthday}}</div>
+                        <div class="font-1">{{homeTown}} / {{college.name}}</div>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</section>
+<script src="{{basepath}}javascript/roster.js"></script>
