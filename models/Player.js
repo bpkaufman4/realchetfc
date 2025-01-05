@@ -46,7 +46,22 @@ Player.init(
                 key: 'collegeId'
             }
         },
-        countryCode: DataTypes.STRING
+        countryCode: DataTypes.STRING,
+        goalsModifier: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+        assistsModifier: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+        gamesModifier: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        }
     },
     {
         sequelize,
