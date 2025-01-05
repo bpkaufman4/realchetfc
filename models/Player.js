@@ -22,7 +22,7 @@ Player.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        bio: DataTypes.STRING,
+        bio: DataTypes.BLOB,
         image: DataTypes.STRING,
         imageNoBackground: DataTypes.STRING,
         number: DataTypes.STRING,
