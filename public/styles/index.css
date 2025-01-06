@@ -111,3 +111,11 @@ textarea {
     display: block;
     margin-top: -1.25rem;
 }
+
+main {
+    min-height: calc(100vh - 278px);
+}
+
+footer a {
+    color: white;
+}
