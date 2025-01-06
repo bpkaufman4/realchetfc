@@ -51,8 +51,8 @@ real-chet-fc-cms/
 - **Node.js**: JavaScript runtime environment for building the server-side application.
 - **Express.js**: Web framework for building the application and handling HTTP requests.
 - **Handlebars**: Templating engine used to generate dynamic HTML views.
-- **Sequelize**: SQL ORM to create and manage data models
-- **CloudFlare** For storing player profile images if not saved locally.
+- **Sequelize**: SQL ORM to create and manage data models.
+- **CloudFlare** For storing player profile images.
 
 ---
 
