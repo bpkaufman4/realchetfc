@@ -32,15 +32,14 @@ The project follows the **MVC** (Model-View-Controller) architecture:
 real-chet-fc-cms/
 │
 ├── models/                  # Contains data models for players, matches, etc.
-├── controller/             # Handles the logic and routes for managing players, matches, etc.
+├── controller/              # Handles the logic and routes for managing players, matches, etc.
+|   ├── routes/              # Defines the routes for player and match management
 ├── views/                   # Contains Handlebars templates for displaying content
 │   ├── partials/            # Reusable view components
 ├── public/                  # Static assets (images, CSS, JS)
-│
-├── routes/                  # Defines the routes for player and match management
 ├── config/                  # Configuration files, such as database setup
-├── controller/             # Logic for routing and managing data
-├── server.js                   # Main entry point to start the server
+├── controller/              # Logic for routing and managing data
+├── server.js                # Main entry point to start the server
 ├── .env                     # Environment variables
 ```
 
