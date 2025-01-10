@@ -1,4 +1,4 @@
-# Real Chet F.C. CMS
+# [Real Chet F.C. CMS](https://www.realchetfc.com/)
 
 This is a Content Management System (CMS) designed to manage the roster, schedule, and statistics for **Real Chet F.C.**, a soccer team. The system is built using **Node.js**, **Express.js**, and **Handlebars**, utilizing the **MVC** (Model-View-Controller) architecture. It allows admins to efficiently manage player information, match results, and schedules.
 
