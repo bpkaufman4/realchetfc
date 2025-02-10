@@ -72,7 +72,7 @@ getElem('savePlayerBtn').addEventListener('click', () => {
 
 Dropzone.options.dropzone = {
     uploadMultiple: false,
-    chunking: true,
+    chunking: false,
     acceptedFiles: 'image/*',
     success: function(file, response) {
         console.log(file, response);

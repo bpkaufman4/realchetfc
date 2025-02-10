@@ -19,11 +19,11 @@ function uploadCloudFlare(filePath) {
             }
         })
         .then(({data}) => {
-            console.log(data);
             resolve(data);
         })
         .catch(err => {
             console.log(err);
+            debugger;
         })
     })
 }
