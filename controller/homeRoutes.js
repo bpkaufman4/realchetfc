@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const { Position, Player, Match, BoxScore, College, MatchImage } = require('../models');
 const sequelize = require('../config/connection');
 const { error } = require('console');
+const { BlockList } = require('net');
 router.get('/', (req, res) => {
     Player.findAll({
         attributes: {
@@ -225,9 +226,17 @@ router.get('/match/:id', (req, res) => {
         include: [
             {
                 model:BoxScore,
-                include: Player
+                include: Player,
             },
             MatchImage
+        ],
+        order: [
+            [
+                BoxScore,
+                Player,
+                'number',
+                'ASC'
+            ]
         ]
     })
     .then(dbData => {
