@@ -1,8 +1,11 @@
 const router = require('express').Router();
-const { Match } = require('../../models');
+const { Match, MatchImage } = require('../../models');
 
 router.get('/:id', (req, res) => {
-    Match.findOne({where: {matchId: req.params.id}})
+    Match.findOne({
+        where: {matchId: req.params.id},
+        include: MatchImage
+    })
     .then(dbData => {
         if(dbData) {
             const cleanData = dbData.get({plain: true});

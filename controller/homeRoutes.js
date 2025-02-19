@@ -2,7 +2,7 @@ const router = require('express').Router();
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { Position, Player, Match, BoxScore, College } = require('../models');
+const { Position, Player, Match, BoxScore, College, MatchImage } = require('../models');
 const sequelize = require('../config/connection');
 const { error } = require('console');
 router.get('/', (req, res) => {
@@ -218,5 +218,29 @@ router.get('/schedule', (req, res) => {
         res.render('404');
     })
 });
+
+router.get('/match/:id', (req, res) => {
+    Match.findOne({
+        where: {matchId: req.params.id},
+        include: [
+            {
+                model:BoxScore,
+                include: Player
+            },
+            MatchImage
+        ]
+    })
+    .then(dbData => {
+        return dbData.get({plain: true});
+    })
+    .then(match => {
+        console.log(match);
+        res.render('match', {match});
+    })
+    .catch(err => {
+        console.log(err);
+        res.render('404');
+    })
+})
 
 module.exports = router;

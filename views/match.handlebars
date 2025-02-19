@@ -1,0 +1,52 @@
+<link rel="stylesheet" href="{{basepath}}styles/match.css">
+
+<section class="container p-3 text-center mt-3">
+    <h1>Real Chet F.C. <span class="vs me-2 px-2 py-1"><i>vs</i></span> {{match.opponent}}</h1>
+    <h3>{{dateTimeFormat match.startTime 'MMM d (EEE)'}}</strong>  /  {{dateTimeFormat match.startTime 't'}}  /  {{match.location}}</h3>
+    <h3>{{evaluateMatchResult match}}</h3>
+</section>
+<section class="container p-3 container d-flex flex-column flex-md-row">
+    {{#if match.matchimages}}
+        <div class="col-12 col-md-5 pb-3 pb-md-0">
+            <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {{#each match.matchimages}}
+                        <div class="carousel-item {{#if @first}}active{{/if}}">
+                            <img src="{{url}}" class="d-block w-100">
+                        </div>
+                    {{/each}}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    {{/if}}
+    <div class="col-12 {{#if match.matchimages}}col-md-7 ps-md-3{{/if}}">
+        <table class="w-100 table">
+            <thead>
+                <th class="text-white">#</th>
+                <th class="text-white">Player</th>
+                <th class="text-white">G</th>
+                <th class="text-white">A</th>
+                <th class="text-white"></th>
+            </thead>
+            <tbody>
+                {{#each match.boxScores}}
+                    <tr>
+                        <td class="text-white">{{player.number}}</td>
+                        <td class="text-white"><a href="{{basepath}}player/{{playerId}}" class="text-white">{{player.lastName}}, {{player.firstName}}</a></td>
+                        <td class="text-white">{{goals}}</td>
+                        <td class="text-white">{{assists}}</td>
+                        <td class="text-white">{{#if mvp}}🏆{{/if}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</section>

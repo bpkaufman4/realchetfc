@@ -1,2 +1,6 @@
 
 table {width: 100%;}
+
+#matchImagesCatch img {
+    width: 100px;
+}

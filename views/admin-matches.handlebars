@@ -1,3 +1,6 @@
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+<form action="{{basepath}}uploadFile" method="post" class="dropzone" style="display: none;" id="dropzone"></form>
 <link rel="stylesheet" href="{{basepath}}styles/admin-matches.css" type="text/css" />
 
 <div class="modal fade" id="addMatchModal" tabindex="-1" aria-hidden="true">
@@ -23,6 +26,9 @@
                     </div>
                 </form>
                 <a href="" id="editBoxScore" data-basepath="{{basepath}}">Set Box Score</a>
+                <label class="col-form-label">Photos</label>
+                <div id="matchImagesCatch" class="mb-3"></div>
+                <button id="addMatchImage" class="btn btn-primary">Add Photo</button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -1,0 +1,22 @@
+ 
+
+.vs {
+    background: var(--primaryColor);
+    font-weight: 900;
+    position: relative;
+    top: -3px;
+}
+
+.carousel-item {
+    height: 300px;
+    overflow: hidden;
+    width: 100%;
+    object-fit: cover;
+    object-position: center center;
+}
+.carousel-item img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    object-position: center center;
+}
