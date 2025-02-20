@@ -235,6 +235,7 @@ router.get('/match/:id', (req, res) => {
                 BoxScore,
                 Player,
                 'number',
+                sequelize.literal(' * 1'),
                 'ASC'
             ]
         ]
