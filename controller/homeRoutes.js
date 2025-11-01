@@ -2,8 +2,9 @@ const router = require('express').Router();
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { Position, Player, Match, BoxScore, College, MatchImage } = require('../models');
+const { Position, Player, Match, BoxScore, College, MatchImage, Season, PlayerSeason, FantasyEntry, FantasyEntryPlayer } = require('../models');
 const sequelize = require('../config/connection');
+const { Op } = require('sequelize');
 const { error } = require('console');
 const { BlockList } = require('net');
 router.get('/', (req, res) => {
@@ -16,17 +17,17 @@ router.get('/', (req, res) => {
             ]
         },
         include: [College, Position],
-        order : [['created', 'ASC']]
+        order: [['created', 'ASC']]
     })
-    .then(dbData => {
-        const templateData = {players: dbData.map(player => player.get({plain: true}))};
-        // console.log(templateData);
-        res.render('home', templateData);
-    })
-    .catch(err => {
-        console.log(err);
-        res.render('404');
-    })
+        .then(dbData => {
+            const templateData = { players: dbData.map(player => player.get({ plain: true })) };
+            // console.log(templateData);
+            res.render('home', templateData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.render('404');
+        })
 });
 
 router.get('/playerAdd', (req, res) => {
@@ -51,8 +52,8 @@ router.post('/uploadFile', async (req, res) => {
         }
         fstream = fs.createWriteStream('public/' + relativePath);
         file.pipe(fstream);
-        fstream.on('close', function () {    
-            res.json({status: 'success', fileName, url, relativePath});
+        fstream.on('close', function () {
+            res.json({ status: 'success', fileName, url, relativePath });
         });
     });
 });
@@ -61,107 +62,109 @@ router.get('/login', (req, res) => {
     res.render('login');
 })
 router.get('/admin', (req, res) => {
-    if(!req.session.admin) {
+    if (!req.session.admin) {
         res.redirect('login');
         return;
     }
-    res.render('admin', {layout: 'admin'});
+    res.render('admin', { layout: 'admin' });
 });
 
 router.get('/admin-players', (req, res) => {
-    if(!req.session.admin) {
+    if (!req.session.admin) {
         res.redirect('login');
         return;
     }
 
     const colleges = College.findAll()
-    .then(dbData => {
-        let dbDataClean = dbData.map(position => position.get({plain: true}));
-        return dbDataClean;
-    });
+        .then(dbData => {
+            let dbDataClean = dbData.map(position => position.get({ plain: true }));
+            return dbDataClean;
+        });
 
     const positions = Position.findAll()
-    .then(dbData => {
-        let dbDataClean = dbData.map(position => position.get({plain: true}));
-        return dbDataClean;
-    });
-    
-    const players = Player.findAll({include: [Position, College]})
-    .then(dbData => {
-        let dbDataClean = dbData.map(player => player.get({plain: true}));
-        return dbDataClean;
-    })
+        .then(dbData => {
+            let dbDataClean = dbData.map(position => position.get({ plain: true }));
+            return dbDataClean;
+        });
+
+    const players = Player.findAll({ include: [Position, College] })
+        .then(dbData => {
+            let dbDataClean = dbData.map(player => player.get({ plain: true }));
+            return dbDataClean;
+        })
 
     Promise.all([positions, players, colleges])
-    .then(data => {
-        res.render('admin-players', {layout: 'admin', data: {positions: data[0], players: data[1], colleges: data[2]}});
-    })
+        .then(data => {
+            res.render('admin-players', { layout: 'admin', data: { positions: data[0], players: data[1], colleges: data[2] } });
+        })
 });
 
 router.get('/admin-matches', (req, res) => {
-    if(!req.session.admin) {
+    if (!req.session.admin) {
         res.redirect('login');
         return;
     }
 
     Match.findAll()
-    .then(dbData => {
-        let dbDataClean = dbData.map(match => match.get({plain: true}));
-        return dbDataClean;
-    })
-    .then(matches => {
-        res.render('admin-matches', {layout: 'admin', matches});
-    })
+        .then(dbData => {
+            let dbDataClean = dbData.map(match => match.get({ plain: true }));
+            return dbDataClean;
+        })
+        .then(matches => {
+            res.render('admin-matches', { layout: 'admin', matches });
+        })
 
 });
 
 router.get('/admin-match/:id', (req, res) => {
-    if(!req.session.admin) {
+    if (!req.session.admin) {
         res.redirect('login');
         return;
     }
 
-    const match = Match.findOne({where: {matchId: req.params.id}, include: {model: BoxScore, include: Player}})
-    .then(dbData => {
-        if(!dbData) {
-            res.redirect('admin-matches');
-            return;
-        }
-        const dbDataClean = dbData.get({plain: true});
-        return dbDataClean;
-    });
+    const match = Match.findOne({ where: { matchId: req.params.id }, include: { model: BoxScore, include: Player } })
+        .then(dbData => {
+            if (!dbData) {
+                res.redirect('admin-matches');
+                return;
+            }
+            const dbDataClean = dbData.get({ plain: true });
+            return dbDataClean;
+        });
 
-    const boxScore = BoxScore.findAll({where: {matchId: req.params.id}, include: {model: Player}})
-    .then(dbData => {
-        const dbDataClean = dbData.map(boxScore => boxScore.get({plain: true}));
-        return dbDataClean;
-    })
+    const boxScore = BoxScore.findAll({ where: { matchId: req.params.id }, include: { model: Player } })
+        .then(dbData => {
+            const dbDataClean = dbData.map(boxScore => boxScore.get({ plain: true }));
+            return dbDataClean;
+        })
 
     Promise.all([match, boxScore])
-    .then(reply => {
-        res.render('admin-match', {layout: 'admin', match: reply[0], boxScore: reply[1]});
-    })
+        .then(reply => {
+            res.render('admin-match', { layout: 'admin', match: reply[0], boxScore: reply[1] });
+        })
 });
 
 router.get('/settings', (req, res) => {
-    if(!req.session.admin) {
+    if (!req.session.admin) {
         res.redirect('login');
         return;
     }
-    
+
     const collegeData = College.findAll();
     const positionData = Position.findAll();
+    const seasonData = Season.findAll();
 
-    Promise.all([collegeData, positionData]).then(data => {
-        const colleges = data[0].map(college => college.get({plain: true}));
-        const positions = data[1].map(position => position.get({plain: true}));
-        res.render('settings', {layout: 'admin', colleges, positions});
+    Promise.all([collegeData, positionData, seasonData]).then(([collegeData, positionData, seasonData]) => {
+        const colleges = collegeData.map(college => college.get({ plain: true }));
+        const positions = positionData.map(position => position.get({ plain: true }));
+        const seasons = seasonData.map(season => season.get({ plain: true }));
+        res.render('settings', { layout: 'admin', colleges, positions, seasons });
     })
 })
 
 router.get('/player/:id', (req, res) => {
     Player.findOne({
-        where: {playerId: req.params.id},
+        where: { playerId: req.params.id },
         include: [Position, College],
         attributes: {
             include: [
@@ -171,18 +174,18 @@ router.get('/player/:id', (req, res) => {
             ]
         }
     })
-    .then(dbData => {
-        const dbDataClean = dbData.get({plain: true});
-        return dbDataClean;
-    })
-    .then(player => {
-        // console.log(player);
-        res.render('player', {player});
-    })
-    .catch(err => {
-        console.error(err);
-        res.redirect('/');
-    })
+        .then(dbData => {
+            const dbDataClean = dbData.get({ plain: true });
+            return dbDataClean;
+        })
+        .then(player => {
+            // console.log(player);
+            res.render('player', { player });
+        })
+        .catch(err => {
+            console.error(err);
+            res.redirect('/');
+        })
 });
 
 router.get('/roster', (req, res) => {
@@ -190,42 +193,42 @@ router.get('/roster', (req, res) => {
         order: [[sequelize.literal(`(player.number * 1)`), 'ASC']],
         include: [Position, College]
     })
-    .then(dbData => {
-        const dbDataClean = dbData.map(player => player.get({plain: true}));
-        return dbDataClean;
-    })
-    .then(players => {
-        res.render('roster', {players});
-    })
-    .catch(err => {
-        res.render('404');
-    })
+        .then(dbData => {
+            const dbDataClean = dbData.map(player => player.get({ plain: true }));
+            return dbDataClean;
+        })
+        .then(players => {
+            res.render('roster', { players });
+        })
+        .catch(err => {
+            res.render('404');
+        })
 });
 
 router.get('/schedule', (req, res) => {
     Match.findAll({
         order: [['startTime', 'DESC']]
     })
-    .then(dbData => {
-        const dbDataClean = dbData.map(match => match.get({plain: true}));
-        return dbDataClean;
-    })
-    .then(matches => {
-        console.log(matches);
-        res.render('schedule', {matches});
-    })
-    .catch(err => {
-        console.log(err);
-        res.render('404');
-    })
+        .then(dbData => {
+            const dbDataClean = dbData.map(match => match.get({ plain: true }));
+            return dbDataClean;
+        })
+        .then(matches => {
+            console.log(matches);
+            res.render('schedule', { matches });
+        })
+        .catch(err => {
+            console.log(err);
+            res.render('404');
+        })
 });
 
 router.get('/match/:id', (req, res) => {
     Match.findOne({
-        where: {matchId: req.params.id},
+        where: { matchId: req.params.id },
         include: [
             {
-                model:BoxScore,
+                model: BoxScore,
                 include: Player,
             },
             MatchImage
@@ -240,17 +243,151 @@ router.get('/match/:id', (req, res) => {
             ]
         ]
     })
-    .then(dbData => {
-        return dbData.get({plain: true});
-    })
-    .then(match => {
-        console.log(match);
-        res.render('match', {match});
-    })
-    .catch(err => {
-        console.log(err);
-        res.render('404');
-    })
+        .then(dbData => {
+            return dbData.get({ plain: true });
+        })
+        .then(match => {
+            console.log(match);
+            res.render('match', { match });
+        })
+        .catch(err => {
+            console.log(err);
+            res.render('404');
+        })
 })
+
+router.get('/season-roster/:seasonId', async (req, res) => {
+    const seasonId = req.params.seasonId;
+    const players = await Player.findAll({
+        include: [
+            {
+                model: PlayerSeason,
+                where: { seasonId }
+            }
+        ]
+    })
+
+    console.log(players);
+
+    res.render('season-roster', { seasonId, players });
+})
+
+router.get('/fantasy', async (req, res) => {
+    try {
+        const currentDate = new Date();
+
+        // Find the current or upcoming season
+        let season = await Season.findOne({
+            where: {
+                startDate: {
+                    [Op.lte]: currentDate
+                },
+                endDate: {
+                    [Op.gte]: currentDate
+                }
+            },
+            order: [['startDate', 'DESC']]
+        });
+        
+        // If no current season, get the next upcoming season
+        if (!season) {
+            season = await Season.findOne({
+                where: {
+                    startDate: {
+                        [Op.gt]: currentDate
+                    }
+                },
+                order: [['startDate', 'ASC']]
+            });
+        }
+        
+        if (!season) {
+            return res.redirect('/');
+        }
+
+        // Get all fantasy entries for this season with their players
+        const fantasyEntries = await FantasyEntry.findAll({
+            where: { seasonId: season.seasonId },
+            include: [
+                {
+                    model: FantasyEntryPlayer,
+                    include: [Player]
+                }
+            ]
+        });
+        
+        // Calculate total points for each fantasy entry and sort by points
+        const fantasyRankings = [];
+        
+        for (const entry of fantasyEntries) {
+            const entryData = entry.get({ plain: true });
+            let totalPoints = 0;
+            
+            // Calculate points for each player in this fantasy entry
+            for (const fep of entryData.fantasyEntryPlayers) {
+                const playerBoxScores = await BoxScore.findAll({
+                    include: [
+                        {
+                            model: Match,
+                            where: { seasonId: season.seasonId },
+                            attributes: []
+                        }
+                    ],
+                    where: { playerId: fep.player.playerId },
+                    attributes: ['goals', 'assists']
+                });
+                
+                const playerPoints = playerBoxScores.reduce((sum, boxScore) => {
+                    return sum + (boxScore.goals || 0) + (boxScore.assists || 0);
+                }, 0);
+                
+                fep.player.totalPoints = playerPoints;
+                totalPoints += playerPoints;
+            }
+            
+            fantasyRankings.push({
+                ...entryData,
+                totalPoints
+            });
+        }
+        
+        // Sort by total points in descending order
+        fantasyRankings.sort((a, b) => b.totalPoints - a.totalPoints);        
+        // Add rank to each entry
+        fantasyRankings.forEach((entry, index) => {
+            entry.rank = index + 1;
+        });
+
+        const isOngoingSeason = currentDate >= season.startDate && currentDate <= season.endDate;
+        const isUpcomingSeason = currentDate < season.startDate;
+
+        // Get all available players for the season if it's upcoming
+        let availablePlayers = [];
+        if (isUpcomingSeason) {
+            const playerSeasons = await PlayerSeason.findAll({
+                where: { seasonId: season.seasonId },
+                include: [
+                    {
+                        model: Player,
+                        include: [Position, College]
+                    }
+                ]
+            });
+            availablePlayers = playerSeasons.map(ps => ps.player);
+        }
+
+        res.render('fantasy', {
+            season: season.get({ plain: true }),
+            fantasyRankings,
+            isOngoingSeason,
+            isUpcomingSeason,
+            availablePlayers
+        });
+
+    } catch (err) {
+        console.error('Fantasy route error:', err);
+        res.redirect('/');
+    }
+});
 
 module.exports = router;

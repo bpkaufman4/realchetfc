@@ -6,6 +6,10 @@ const Match = require('./Match');
 const BoxScore = require('./BoxScore');
 const Eden = require('./Eden');
 const MatchImage = require('./MatchImage');
+const Season = require('./Season');
+const PlayerSeason = require('./PlayerSeason');
+const FantasyEntry = require('./FantasyEntry');
+const FantasyEntryPlayer = require('./FantasyEntryPlayer');
 
 Player.belongsTo(College, {foreignKey: 'collegeId'});
 Player.belongsTo(Position, {foreignKey: 'positionId'});
@@ -17,5 +21,15 @@ BoxScore.belongsTo(Match, {foreignKey: 'matchId'});
 Match.hasMany(BoxScore, {foreignKey: 'matchId'});
 MatchImage.belongsTo(Match, {foreignKey: 'matchId'});
 Match.hasMany(MatchImage, {foreignKey: 'matchId'});
+PlayerSeason.belongsTo(Player, {foreignKey: 'playerId'});
+Player.hasMany(PlayerSeason, {foreignKey: 'playerId'});
+PlayerSeason.belongsTo(Season, {foreignKey: 'seasonId'});
+Season.hasMany(PlayerSeason, {foreignKey: 'seasonId'});
+FantasyEntry.belongsTo(Season, {foreignKey: 'seasonId'});
+Season.hasMany(FantasyEntry, {foreignKey: 'seasonId'});
+FantasyEntryPlayer.belongsTo(FantasyEntry, {foreignKey: 'fantasyEntryId'});
+FantasyEntry.hasMany(FantasyEntryPlayer, {foreignKey: 'fantasyEntryId'});
+FantasyEntryPlayer.belongsTo(Player, {foreignKey: 'playerId'});
+Player.hasMany(FantasyEntryPlayer, {foreignKey: 'playerId'});
 
-module.exports = { User, College, Position, Player, Match, BoxScore, Eden, MatchImage };
+module.exports = { User, College, Position, Player, Season, Match, BoxScore, Eden, MatchImage, PlayerSeason, FantasyEntry, FantasyEntryPlayer };

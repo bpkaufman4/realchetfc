@@ -1,6 +1,11 @@
 
 const exphbs = require('express-handlebars');
-const hbs = exphbs.create({});
+const hbs = exphbs.create({
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true
+    }
+});
 const { DateTime } = require('luxon');
 const { getFlagEmoji } = require('./helpers');
 

@@ -24,6 +24,13 @@ Match.init(
             type: DataTypes.DATE,
             allowNull: false
         },
+        seasonId: {
+            type: DataTypes.UUID,
+            references: {
+                model: 'season',
+                key: 'seasonId'
+            }
+        },
         ourScore: DataTypes.INTEGER,
         opponentScore: DataTypes.INTEGER
     },

@@ -1,0 +1,169 @@
+<link rel="stylesheet" href="{{basepath}}styles/roster.css">
+<section class="container p-3">
+  <div class="line mb-5 mt-4 d-flex justify-content-around align-items-center">
+    <h1>Fantasy Rankings - {{season.name}}</h1>
+    {{#if isUpcomingSeason}}
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createFantasyEntryModal">
+      Create Entry
+    </button>
+    {{/if}}
+  </div>
+
+  {{#if fantasyRankings}}
+  <!-- Mobile View -->
+  <div class="d-flex flex-column gap-3 d-sm-none">
+    {{#each fantasyRankings}}
+    <div class="col-12 player-card h-auto">
+      <div class="p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="d-flex align-items-center gap-3">
+            <div class="number"
+              style="position: static; width: auto; height: auto; padding: 8px 12px; font-size: 16px;">
+              #{{rank}}
+            </div>
+            <div>
+              <div class="font-2">{{teamName}}</div>
+              <div class="font-1">{{firstName}} {{lastName}}</div>
+            </div>
+          </div>
+          <div class="text-end">
+            <div class="font-2">{{totalPoints}}</div>
+            <div class="font-1">points</div>
+          </div>
+        </div>
+
+        {{#if isOngoingSeason}}
+        <div class="separator my-2"></div>
+        <div class="font-1 mb-2"><strong>Players:</strong></div>
+        <div class="d-flex flex-wrap gap-1">
+          {{#each fantasyEntryPlayers}}
+          <span class="badge bg-secondary">
+            {{player.firstName}} {{player.lastName}} ({{player.totalPoints}} pts)
+          </span>
+          {{/each}}
+        </div>
+        {{/if}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+
+  <!-- Desktop View -->
+  <div class="row d-none d-sm-flex">
+    {{#each fantasyRankings}}
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <div class="player-card">
+        <div class="p-3 h-100 d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="number"
+              style="position: static; width: auto; height: auto; padding: 6px 10px; font-size: 14px;">
+              #{{rank}}
+            </div>
+            <div class="text-end">
+              <div class="font-2">{{totalPoints}}</div>
+              <div class="font-1" style="font-size: 12px;">points</div>
+            </div>
+          </div>
+
+          <div class="font-2 mb-1">{{teamName}}</div>
+          <div class="font-1 mb-2">{{firstName}} {{lastName}}</div>
+          <div class="separator my-2"></div>
+
+          {{#if ../isOngoingSeason}}
+          <div class="font-1 mb-2" style="font-size: 12px;"><strong>Players:</strong></div>
+          <div class="flex-grow-1">
+            {{#each fantasyEntryPlayers}}
+            <div class="font-1 mb-1" style="font-size: 11px;">
+              {{player.firstName}} {{player.lastName}}
+              <span class="text-muted">({{player.totalPoints}})</span>
+            </div>
+            {{/each}}
+          </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{else}}
+  <div class="text-center py-5">
+    <h3 class="text-muted">No fantasy entries found for this season</h3>
+    <p class="text-muted">Check back later or contact an administrator.</p>
+  </div>
+  {{/if}}
+</section>
+
+{{#if isUpcomingSeason}}
+<!-- Create Fantasy Entry Modal -->
+<div class="modal fade" id="createFantasyEntryModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Fantasy Entry</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="fantasyEntryForm">
+          <input type="hidden" id="seasonId" value="{{season.seasonId}}">
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="teamName" class="form-label">Team Name:*</label>
+              <input type="text" class="form-control" id="teamName" required>
+            </div>
+            <div class="col-md-3">
+              <label for="firstName" class="form-label">First Name:*</label>
+              <input type="text" class="form-control" id="firstName" required>
+            </div>
+            <div class="col-md-3">
+              <label for="lastName" class="form-label">Last Name:*</label>
+              <input type="text" class="form-control" id="lastName" required>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email:*</label>
+              <input type="email" class="form-control" id="email" required>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Select Players:*</label>
+            <div class="row" id="playersGrid">
+              {{#each availablePlayers}}
+              <div class="col-md-6 col-lg-4 mb-2">
+                <div class="form-check">
+                  <input class="form-check-input player-checkbox" type="checkbox" value="{{playerId}}"
+                    id="player_{{playerId}}">
+                  <label class="form-check-label" for="player_{{playerId}}">
+                    <strong>{{firstName}} {{lastName}}</strong>
+                    {{#if position}}
+                    <span class="text-muted">({{position.abbreviation}})</span>
+                    {{/if}}
+                    {{#if number}}
+                    <span class="badge bg-secondary ms-1">#{{number}}</span>
+                    {{/if}}
+                  </label>
+                </div>
+              </div>
+              {{/each}}
+            </div>
+            <small class="form-text text-muted">Select the players for your fantasy team.</small>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveFantasyEntryBtn">Create Entry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Make basepath available to external script
+  window.basepath = '{{basepath}}';
+</script>
+<script src="{{basepath}}javascript/fantasy.js"></script>
+{{/if}}

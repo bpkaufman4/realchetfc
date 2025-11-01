@@ -1,6 +1,5 @@
 const { Position } = require('../models');
 
-
 function seedPositions() {
     const positionsSeed = [
         {
@@ -19,12 +18,17 @@ function seedPositions() {
             name: 'Goalkeeper',
             abbreviation: 'GK'
         }
-    ]
+    ];
     
-    Position.bulkCreate(positionsSeed)
-    .then(dbData => {
-        console.log(dbData);
-    });
+    return Position.bulkCreate(positionsSeed)
+        .then(dbData => {
+            console.log('Positions seeded successfully');
+            return dbData;
+        })
+        .catch(err => {
+            console.error('Error seeding positions:', err);
+            throw err;
+        });
 }
 
 module.exports = seedPositions;

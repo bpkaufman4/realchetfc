@@ -19,6 +19,13 @@ getElem('addPositionBtn').addEventListener('click', () => {
     });
 });
 
+getElem('addSeasonBtn').addEventListener('click', () => {
+    const formInputs = getElem('addSeasonModal').querySelectorAll('input, select, textarea');
+    formInputs.forEach(field => {
+        field.value = '';
+    });
+});
+
 getElem('saveCollegeBtn').addEventListener('click', () => {
     const collegeId = getVal('collegeId');
     const name = getVal('collegeName');
@@ -122,6 +129,57 @@ getElem('savePositionBtn').addEventListener('click', () => {
     }
 })
 
+getElem('saveSeasonBtn').addEventListener('click', () => {
+    const seasonId = getVal('seasonId');
+    const name = getVal('name');
+    const startDate = getVal('startDate');
+    const endDate = getVal('endDate');
+
+    let request = {seasonId, name, startDate, endDate};
+
+    for(key in request) {
+        if(!request[key]) delete request[key];
+    }
+
+    if(saveMode == 'add') {
+        fetch('api/season/create', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(request)
+        })
+        .then(response => {
+            return  response.json();
+        })
+        .then(reply => {
+            if(reply.status == 'fail') {
+                alert('Error saving position')
+            } else {
+                window.location.reload();
+            }
+        });
+    } else {
+        fetch('api/season/'+getVal('seasonId'), {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(request)
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(reply => {
+            if(reply.status == 'fail') {
+                alert('Error saving college')
+            } else {
+                window.location.reload();
+            }
+        })
+    }
+})
+
 Dropzone.options.dropzone = {
     uploadMultiple: false,
     chunking: true,
@@ -200,6 +258,30 @@ editPositionButtons.forEach(button => {
     })
 })
 
+const editSeasonButtons = document.querySelectorAll('.edit-season-button');
+editSeasonButtons.forEach(button => {
+    button.addEventListener('click', () => {  
+        setVal('seasonId', button.dataset.seasonId);
+        saveMode = 'edit';
+        fetch('api/season/' + button.dataset.seasonId)
+        .then(response => {
+            return response.json();
+        })
+        .then(reply => {
+            console.log(reply);
+            for(key in reply) {
+                switch(key) {
+                    case 'startDate':
+                    case 'endDate':
+                    case 'name':
+                        setVal(key, reply[key]);
+                        break;
+                }
+            }
+        })
+    })
+})
+
 const deleteCollegeButtons = document.querySelectorAll('.delete-college-button');
 deleteCollegeButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -229,3 +311,19 @@ deletePositionButtons.forEach(button => {
         })
     })
 })
+
+const deleteSeasonButtons = document.querySelectorAll('.delete-season-button');
+deleteSeasonButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        fetch('api/season/' + button.dataset.seasonId, {
+            method: 'DELETE'
+        })
+        .then(res => {
+            return res.json();
+        })
+        .then(reply => {
+            window.location.reload();
+        })
+    })
+})
+
