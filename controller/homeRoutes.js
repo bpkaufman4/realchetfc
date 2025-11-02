@@ -337,6 +337,17 @@ router.get('/fantasy', async (req, res) => {
             return res.redirect('/');
         }
 
+        // Get all matches for this season that have already occurred
+        const matches = await Match.findAll({
+            where: { 
+                seasonId: season.seasonId,
+                startTime: {
+                    [Op.lte]: currentDate  // Only include matches that have already started
+                }
+            },
+            order: [['startTime', 'DESC']]  // Most recent first
+        });
+
         // Get all fantasy entries for this season with their players
         const fantasyEntries = await FantasyEntry.findAll({
             where: { seasonId: season.seasonId },
@@ -348,38 +359,117 @@ router.get('/fantasy', async (req, res) => {
             ]
         });
         
-        // Calculate total points for each fantasy entry and sort by points
+        // Calculate total points for each fantasy entry
         const fantasyRankings = [];
         
         for (const entry of fantasyEntries) {
             const entryData = entry.get({ plain: true });
             let totalPoints = 0;
+            const gameBreakdowns = [];
             
-            // Calculate points for each player in this fantasy entry
-            for (const fep of entryData.fantasyEntryPlayers) {
-                const playerBoxScores = await BoxScore.findAll({
-                    include: [
-                        {
-                            model: Match,
-                            where: { seasonId: season.seasonId },
-                            attributes: []
+            // Create a map to track each player's total points
+            const playerTotals = {};
+            entryData.fantasyEntryPlayers.forEach(fep => {
+                playerTotals[fep.player.playerId] = 0;
+            });
+            
+            // Calculate points for each match
+            for (const match of matches) {
+                const playerScores = [];
+                
+                // Calculate points for each player in this fantasy entry for this match
+                for (const fep of entryData.fantasyEntryPlayers) {
+                    const player = fep.player;
+                    
+                    // Get this player's box score for this match
+                    const boxScore = await BoxScore.findOne({
+                        where: { 
+                            playerId: player.playerId,
+                            matchId: match.matchId 
                         }
-                    ],
-                    where: { playerId: fep.player.playerId },
-                    attributes: ['goals', 'assists']
+                    });
+                    
+                    let matchPoints = 0;
+                    let goals = 0;
+                    let assists = 0;
+                    let mvp = false;
+                    
+                    if (boxScore) {
+                        // Player appeared in the match
+                        goals = boxScore.goals || 0;
+                        assists = boxScore.assists || 0;
+                        mvp = boxScore.mvp || false;
+                        
+                        matchPoints += 1; // Appearance = 1 point
+                        matchPoints += goals * 3; // Goals = 3 points each
+                        matchPoints += assists * 2; // Assists = 2 points each
+                        matchPoints += mvp ? 5 : 0; // MVP = 5 points
+                        matchPoints += player.baseScore || 0; // Base score per game
+                    }
+                    
+                    playerScores.push({
+                        playerId: player.playerId,
+                        playerName: `${player.firstName} ${player.lastName}`,
+                        points: matchPoints,
+                        appeared: !!boxScore,
+                        goals: goals,
+                        assists: assists,
+                        mvp: mvp,
+                        baseScore: player.baseScore || 0
+                    });
+                }
+                
+                // Sort players by points for this match (lowest first)
+                playerScores.sort((a, b) => a.points - b.points);
+                
+                // Find players who appeared and didn't appear in this match
+                const playersWhoAppeared = playerScores.filter(p => p.appeared);
+                const playersWhoDidntAppear = playerScores.filter(p => !p.appeared);
+                
+                // Determine which player to omit based on who played
+                let matchTotal = 0;
+                let omittedPlayer = null;
+                
+                if (playersWhoDidntAppear.length > 0) {
+                    // If one or more players didn't play, omit one of them (first one)
+                    omittedPlayer = playersWhoDidntAppear[0];
+                } else if (playersWhoAppeared.length > 0) {
+                    // If all players played, omit the lowest scoring player who appeared
+                    omittedPlayer = playersWhoAppeared[0];
+                }
+                
+                if (omittedPlayer) {
+                    // Sum points for all players except the omitted one and add to player totals
+                    playerScores.forEach(player => {
+                        if (player.playerId !== omittedPlayer.playerId) {
+                            matchTotal += player.points;
+                            playerTotals[player.playerId] += player.points;
+                        }
+                    });
+                }
+                
+                gameBreakdowns.push({
+                    matchId: match.matchId,
+                    opponent: match.opponent,
+                    date: match.startTime,
+                    playerScores,
+                    omittedPlayer,
+                    matchTotal
                 });
                 
-                const playerPoints = playerBoxScores.reduce((sum, boxScore) => {
-                    return sum + (boxScore.goals || 0) + (boxScore.assists || 0);
-                }, 0);
-                
-                fep.player.totalPoints = playerPoints;
-                totalPoints += playerPoints;
+                totalPoints += matchTotal;
             }
+            
+            // Add total points to each player in the entry data
+            entryData.fantasyEntryPlayers.forEach(fep => {
+                fep.player.totalPoints = playerTotals[fep.player.playerId] || 0;
+            });
             
             fantasyRankings.push({
                 ...entryData,
-                totalPoints
+                totalPoints,
+                gameBreakdowns,
+                lastGameBreakdown: gameBreakdowns.length > 0 ? gameBreakdowns[0] : null  // First game is now most recent
             });
         }
         

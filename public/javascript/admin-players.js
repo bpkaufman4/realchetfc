@@ -28,8 +28,9 @@ getElem('savePlayerBtn').addEventListener('click', () => {
     const birthday = getVal('birthday');
     const collegeId = getVal('collegeId');
     const countryCode = getVal('countryCode');
+    const baseScore = getVal('baseScore');
 
-    let request = {firstName, lastName, positionId, bio, number, heightFeet, heightInches, homeTown, birthday, collegeId, countryCode};
+    let request = {firstName, lastName, positionId, bio, number, heightFeet, heightInches, homeTown, birthday, collegeId, countryCode, baseScore};
 
     if(imageChanged) request.image = image;
 

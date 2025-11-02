@@ -34,6 +34,11 @@ Player.init(
                 key: 'positionId'
             }
         },
+        baseScore: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
         birthday: DataTypes.DATEONLY,
         homeTown: DataTypes.STRING,
         heightFeet: DataTypes.INTEGER,

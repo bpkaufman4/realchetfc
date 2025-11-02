@@ -18,8 +18,7 @@ router.get('/:id', (req, res) => {
     })
 })
 router.post('/create', (req, res) => {
-    console.log(req.body);
-
+    
     function createPlayer(newPlayer) {
         Player.create(newPlayer)
         .then(result => {

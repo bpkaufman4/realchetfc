@@ -10,12 +10,12 @@ function seedSeasons() {
         {
             name: '2025 Season',
             startDate: new Date('2025-03-01'),
-            endDate: new Date('2025-10-31')
+            endDate: new Date('2025-11-30')
         },
         {
             name: '2026 Season',
             startDate: new Date('2026-03-01'),
-            endDate: new Date('2026-10-31')
+            endDate: new Date('2026-11-30')
         }
     ];
     

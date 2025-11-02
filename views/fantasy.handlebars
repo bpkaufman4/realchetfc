@@ -20,7 +20,11 @@
   <!-- Mobile View -->
   <div class="d-flex flex-column gap-3 d-sm-none">
     {{#each fantasyRankings}}
-    <div class="col-12 player-card h-auto">
+    <div class="col-12 player-card h-auto fantasy-team-card" 
+         style="cursor: pointer;" 
+         data-bs-toggle="modal" 
+         data-bs-target="#teamBreakdownModal"
+         data-team-index="{{@index}}">
       <div class="p-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div class="d-flex align-items-center gap-3">
@@ -49,6 +53,9 @@
           </span>
           {{/each}}
         </div>
+        {{#if ../lastGameBreakdown.omittedPlayer}}
+        <div class="font-1 mt-2"><small class="text-muted">Last game omitted: {{../lastGameBreakdown.omittedPlayer.playerName}}</small></div>
+        {{/if}}
         {{/if}}
       </div>
     </div>
@@ -59,7 +66,11 @@
   <div class="row d-none d-sm-flex">
     {{#each fantasyRankings}}
     <div class="col-6 col-md-4 col-lg-3 mb-4">
-      <div class="player-card">
+      <div class="player-card fantasy-team-card" 
+           style="cursor: pointer;" 
+           data-bs-toggle="modal" 
+           data-bs-target="#teamBreakdownModal"
+           data-team-index="{{@index}}">
         <div class="p-3 h-100 d-flex flex-column">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div class="number"
@@ -85,6 +96,11 @@
               <span class="text-muted">({{player.totalPoints}})</span>
             </div>
             {{/each}}
+            {{#if ../lastGameBreakdown.omittedPlayer}}
+            <div class="font-1 mt-1" style="font-size: 10px;">
+              <small class="text-muted">Last game omitted: {{../lastGameBreakdown.omittedPlayer.playerName}}</small>
+            </div>
+            {{/if}}
           </div>
           {{/if}}
         </div>
@@ -99,6 +115,23 @@
   </div>
   {{/if}}
 </section>
+
+<!-- Team Breakdown Modal -->
+<div class="modal fade" id="teamBreakdownModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="teamBreakdownModalTitle">Team Breakdown</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="teamBreakdownContent">
+          <!-- Content will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {{#if isUpcomingSeason}}
 <!-- Create Fantasy Entry Modal -->
@@ -174,10 +207,21 @@
     </div>
   </div>
 </div>
+{{/if}}
 
 <script>
   // Make basepath available to external script
   window.basepath = '{{basepath}}';
+  
+  // Make fantasy data available to the modal - available for all seasons
+  {{#if fantasyRankings}}
+  window.fantasyRankings = {{{json fantasyRankings}}};
+  {{else}}
+  window.fantasyRankings = [];
+  {{/if}}
+  
+  // Debug logging
+  console.log('Fantasy rankings loaded:', window.fantasyRankings);
+  console.log('Number of teams:', window.fantasyRankings ? window.fantasyRankings.length : 'No data');
 </script>
 <script src="{{basepath}}javascript/fantasy.js"></script>
-{{/if}}

@@ -32,7 +32,7 @@
                             <select name="positionId" id="positionId" class="form-select">
                                 <option value="">Choose a position</option>
                                 {{#each data.positions}}
-                                    <option value="{{positionId}}">{{name}}</option>
+                                <option value="{{positionId}}">{{name}}</option>
                                 {{/each}}
                             </select>
                         </div>
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="mb-3 col-12">
+                        <div class="mb-3 col-8">
                             <label for="heightFeet" class="col-form-label">Height:</label>
                             <div class="input-group">
                                 <input type="number" id="heightFeet" step="1" min="4" max="8" class="form-control">
@@ -56,6 +56,10 @@
                                 <input type="number" step="1" max="11" min="0" id="heightInches" class="form-control">
                                 <span class="input-group-text">inches</span>
                             </div>
+                        </div>
+                        <div class="mb-3 col-4">
+                            <label for="baseScore" class="col-form-label">Base Score:</label>
+                            <input type="number" class="form-control" id="baseScore">
                         </div>
                     </div>
                     <div class="row">
@@ -74,7 +78,7 @@
                             <select class="form-select" name="collegeId" id="collegeId">
                                 <option value="" selected>Choose a college</option>
                                 {{#each data.colleges }}
-                                    <option value="{{collegeId}}">{{name}}</option>
+                                <option value="{{collegeId}}">{{name}}</option>
                                 {{/each}}
                             </select>
                         </div>
@@ -89,7 +93,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button id="savePlayerBtn" type="button" data-bs-dismiss="modal" class="btn btn-primary">Add Player</button>
+                <button id="savePlayerBtn" type="button" data-bs-dismiss="modal" class="btn btn-primary">Add
+                    Player</button>
             </div>
         </div>
     </div>
@@ -97,7 +102,8 @@
 
 <div class="d-flex justify-content-between py-3">
     <h2 class="w-auto">Players</h2>
-    <button class="btn btn-primary" id="addPlayerBtn" data-bs-toggle="modal" data-bs-target="#addPlayerModal">Add Player</button>
+    <button class="btn btn-primary" id="addPlayerBtn" data-bs-toggle="modal" data-bs-target="#addPlayerModal">Add
+        Player</button>
 </div>
 
 <table>
@@ -117,24 +123,28 @@
     </thead>
     <tbody>
         {{#each data.players}}
-            <tr>
-                <td>
-                    {{#if image}}
-                        <img class="player-head-shot table" src="{{image}}">
-                    {{else}}
-                        <img class="player-head-shot table" src="{{basepath}}images/logo.png">
-                    {{/if}}
-                </td>
-                <td>{{firstName}}</td>
-                <td>{{lastName}}</td>
-                <td>{{position.name}}</td>
-                <td>{{dateFormat birthday 'DD'}}</td>
-                <td>{{homeTown}}</td>
-                <td>{{getHeight heightFeet heightInches}}</td>
-                <td>{{college.name}}</td>
-                <td><button class="btn btn-primary edit-button" data-bs-toggle="modal" data-bs-target="#addPlayerModal" data-player-id="{{playerId}}">Edit</button></td>
-                <td><button class="btn btn-primary delete-button" data-player-id="{{playerId}}">Delete</button></td>
-            </tr>
+        <tr>
+            <td>
+                {{#if image}}
+                <img class="player-head-shot table" src="{{image}}">
+                {{else}}
+                <img class="player-head-shot table" src="{{basepath}}images/logo.png">
+                {{/if}}
+            </td>
+            <td>{{firstName}}</td>
+            <td>{{lastName}}</td>
+            <td>{{position.name}}</td>
+            <td>{{dateFormat birthday 'DD'}}</td>
+            <td>{{homeTown}}</td>
+            <td>{{getHeight heightFeet heightInches}}</td>
+            <td>{{college.name}}</td>
+            <td>
+                <button class="btn btn-primary edit-button" data-bs-toggle="modal" data-bs-target="#addPlayerModal" data-player-id="{{playerId}}">Edit</button>
+            </td>
+            <td>
+                <button class="btn btn-primary delete-button" data-player-id="{{playerId}}">Delete</button>
+            </td>
+        </tr>
         {{/each}}
     </tbody>
 </table>

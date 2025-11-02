@@ -210,3 +210,71 @@
     text-align: center;
   }
 }
+
+/* Team breakdown modal styles */
+.fantasy-team-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.modal-xl {
+  max-width: 90%;
+}
+
+.accordion-item {
+  background-color: #3d3d3d;
+  border: 1px solid #555;
+}
+
+.accordion-button {
+  background-color: #4d4d4d;
+  color: #fff;
+  border: none;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--primaryColor);
+  color: #fff;
+}
+
+.accordion-button:focus {
+  box-shadow: 0 0 0 0.2rem rgba(254, 0, 0, 0.25);
+}
+
+.accordion-body {
+  background-color: #2d2d2d;
+  color: #fff;
+}
+
+.table-dark {
+  --bs-table-bg: #2d2d2d;
+  --bs-table-border-color: #555;
+}
+
+.table th,
+.table td {
+  border-color: #555;
+  color: #fff;
+}
+
+.table-warning {
+  --bs-table-bg: rgba(255, 193, 7, 0.2);
+  --bs-table-color: #fff;
+}
+
+.table-light {
+  --bs-table-bg: rgba(108, 117, 125, 0.2);
+  --bs-table-color: #fff;
+}
+
+.alert-info {
+  background-color: rgba(13, 202, 240, 0.2);
+  border-color: rgba(13, 202, 240, 0.3);
+  color: #fff;
+}
+
+.alert-sm {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}

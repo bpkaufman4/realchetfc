@@ -64,4 +64,8 @@ hbs.handlebars.registerHelper('evaluateMatchResult', match => {
     return `${result}, ${match.ourScore || 0} - ${match.opponentScore || 0}`;
 });
 
+hbs.handlebars.registerHelper('json', (context) => {
+    return JSON.stringify(context);
+});
+
 module.exports = hbs;

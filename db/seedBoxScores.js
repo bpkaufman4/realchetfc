@@ -11,9 +11,10 @@ async function seedBoxScores() {
     const completedMatches = matches.filter(match => match.ourScore !== null);
     
     completedMatches.forEach((match, matchIndex) => {
-        // Randomly select 11-18 players who "played" in this match
+        // Create box scores for almost all players (85-95% of total players)
         const shuffledPlayers = [...players].sort(() => 0.5 - Math.random());
-        const playersInMatch = shuffledPlayers.slice(0, Math.floor(Math.random() * 8) + 11); // 11-18 players
+        const participationRate = 0.85 + Math.random() * 0.1; // 85-95% participation
+        const playersInMatch = shuffledPlayers.slice(0, Math.floor(players.length * participationRate));
         
         let goalsToDistribute = match.ourScore || 0;
         let assistsToDistribute = Math.max(0, goalsToDistribute - Math.floor(Math.random() * 2)); // Usually fewer assists than goals
