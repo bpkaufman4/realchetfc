@@ -69,13 +69,12 @@ document.addEventListener('DOMContentLoaded', function() {
       const teamName = document.getElementById('teamName').value.trim();
       const firstName = document.getElementById('firstName').value.trim();
       const lastName = document.getElementById('lastName').value.trim();
-      const email = document.getElementById('email').value.trim();
       const seasonId = document.getElementById('seasonId').value;
       
       const selectedPlayers = Array.from(document.querySelectorAll('.player-selection-card.selected'))
         .map(card => card.getAttribute('data-player-id'));
       
-      if (!teamName || !firstName || !lastName || !email) {
+      if (!teamName || !firstName || !lastName ) {
         alert('Please fill in all required fields.');
         return;
       }
@@ -95,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
             teamName,
             firstName,
             lastName,
-            email,
             seasonId,
             selectedPlayers
           })
