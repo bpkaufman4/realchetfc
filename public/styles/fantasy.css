@@ -1,0 +1,212 @@
+/* Fantasy Page Styles */
+
+/* Dark theme modal styles */
+.modal-content {
+  background-color: #2d2d2d;
+  border: 1px solid #444;
+  color: #fff;
+}
+
+.modal-header {
+  border-bottom: 1px solid #444;
+}
+
+.modal-footer {
+  border-top: 1px solid #444;
+}
+
+.form-label {
+  color: #fff;
+}
+
+.form-control {
+  background-color: #3d3d3d;
+  border: 1px solid #555;
+  color: #fff;
+}
+
+.form-control:focus {
+  background-color: #3d3d3d;
+  border-color: var(--primaryColor);
+  color: #fff;
+  box-shadow: 0 0 0 0.2rem rgba(254, 0, 0, 0.25);
+}
+
+/* Player selection card styles */
+.player-selection-card {
+  background: #3d3d3d;
+  border: 2px solid #555;
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.player-selection-card:hover {
+  border-color: #777;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.player-selection-card.selected {
+  border-color: var(--primaryColor);
+  background: linear-gradient(135deg, rgba(254, 0, 0, 0.1), rgba(254, 0, 0, 0.05));
+  box-shadow: 0 0 20px rgba(254, 0, 0, 0.3);
+}
+
+.player-selection-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.player-selection-card.disabled:hover {
+  transform: none;
+  border-color: #555;
+  box-shadow: none;
+}
+
+.player-image-container {
+  position: relative;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.player-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #555;
+}
+
+.player-selection-card.selected .player-image {
+  border-color: var(--primaryColor);
+}
+
+.player-image-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  border: 3px solid #555;
+  font-size: 24px;
+  color: #999;
+}
+
+.player-selection-card.selected .player-image-placeholder {
+  border-color: var(--primaryColor);
+  background: rgba(254, 0, 0, 0.2);
+  color: var(--primaryColor);
+}
+
+.player-number {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--primaryColor);
+  color: white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.player-info {
+  text-align: center;
+}
+
+.player-name {
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+.player-position {
+  color: #bbb;
+  font-size: 12px;
+}
+
+.selection-indicator {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--primaryColor);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.player-selection-card.selected .selection-indicator {
+  opacity: 1;
+}
+
+.text-muted {
+  color: #bbb !important;
+}
+
+/* Header layout styles */
+.fantasy-header {
+  position: relative;
+  margin-bottom: 2rem;
+  margin-top: 1.5rem;
+}
+
+.create-team-button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Player selection counter */
+.player-selection-counter {
+  background: var(--primaryColor);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.player-selection-counter.complete {
+  background: #28a745;
+}
+
+.player-selection-counter.over-limit {
+  background: #dc3545;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .create-team-button {
+    position: static;
+    transform: none;
+    margin-top: 1rem;
+    text-align: center;
+  }
+}

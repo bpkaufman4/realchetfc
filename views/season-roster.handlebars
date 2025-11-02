@@ -1,1 +1,353 @@
-<div></div>
+<div class="roster-container">
+    <div class="roster-header">
+        <h1>Roster Management</h1>
+        <h2>{{season.name}}</h2>
+        <p>Roster Period: {{formatDate season.startDate}} - {{formatDate season.endDate}}</p>
+    </div>
+
+    <div class="roster-controls">
+        <div class="search-control">
+            <input type="text" id="playerSearch" placeholder="Search players...">
+        </div>
+    </div>
+
+    <div class="roster-pools">
+        <!-- Players on Roster -->
+        <div class="roster-pool on-roster">
+            <h3>On Roster <span class="pool-count" id="onRosterCount">0</span></h3>
+            <div class="player-cards" id="onRosterCards">
+                {{#each players}}
+                {{#if inSeason}}
+                <div class="player-card on-roster" data-player-id="{{playerId}}">
+                    <div class="player-image">
+                        {{#if image}}
+                            <img src="{{image}}" alt="{{firstName}} {{lastName}}" class="player-photo">
+                        {{else}}
+                            <div class="no-photo">{{substring firstName 0 1}}{{substring lastName 0 1}}</div>
+                        {{/if}}
+                    </div>
+                    <div class="player-name">{{firstName}} {{lastName}}</div>
+                    <div class="player-number">#{{number}}</div>
+                    <button class="remove-btn" onclick="removeFromRoster('{{playerId}}')">×</button>
+                </div>
+                {{/if}}
+                {{/each}}
+            </div>
+        </div>
+
+        <!-- Available Players -->
+        <div class="roster-pool available">
+            <h3>Available Players <span class="pool-count" id="availableCount">0</span></h3>
+            <div class="player-cards" id="availableCards">
+                {{#each players}}
+                {{#unless inSeason}}
+                <div class="player-card available" data-player-id="{{playerId}}">
+                    <div class="player-image">
+                        {{#if image}}
+                            <img src="{{image}}" alt="{{firstName}} {{lastName}}" class="player-photo">
+                        {{else}}
+                            <div class="no-photo">{{substring firstName 0 1}}{{substring lastName 0 1}}</div>
+                        {{/if}}
+                    </div>
+                    <div class="player-name">{{firstName}} {{lastName}}</div>
+                    <div class="player-number">#{{number}}</div>
+                    <button class="add-btn" onclick="addToRoster('{{playerId}}')">+</button>
+                </div>
+                {{/unless}}
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+    <div class="roster-summary">
+        <div class="summary-stats">
+            <div class="stat">
+                <span class="stat-number" id="totalPlayers">{{players.length}}</span>
+                <span class="stat-label">Total Players</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="playersOnRoster">0</span>
+                <span class="stat-label">On Roster</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="playersAvailable">0</span>
+                <span class="stat-label">Available</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.roster-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.roster-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.roster-header h1 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.roster-header h2 {
+    color: #ccc;
+    margin-bottom: 5px;
+}
+
+.roster-header p {
+    color: #aaa;
+}
+
+.roster-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 15px;
+    background: var(--bs-tertiary-bg);
+    border-radius: 8px;
+    border: 1px solid #555;
+}
+
+.search-control input {
+    padding: 10px 15px;
+    border: 1px solid #555;
+    border-radius: 6px;
+    width: 300px;
+    background: #444;
+    color: white;
+    font-size: 16px;
+}
+
+.search-control input::placeholder {
+    color: #ccc;
+    opacity: 0.7;
+}
+
+.roster-pools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.roster-pool {
+    background: #444;
+    border: 2px solid #555;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 400px;
+}
+
+.roster-pool.on-roster {
+    border-color: #28a745;
+}
+
+.roster-pool.available {
+    border-color: #dc3545;
+}
+
+.roster-pool h3 {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pool-count {
+    background: #666;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.roster-pool.on-roster .pool-count {
+    background: #28a745;
+}
+
+.roster-pool.available .pool-count {
+    background: #dc3545;
+}
+
+.player-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.player-card {
+    background: #555;
+    border: 2px solid #666;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.player-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.player-card.on-roster {
+    border-color: #28a745;
+    background: linear-gradient(135deg, #555 0%, #4a6741 100%);
+}
+
+.player-card.available {
+    border-color: #dc3545;
+    background: linear-gradient(135deg, #555 0%, #674147 100%);
+}
+
+.player-card.hidden {
+    display: none;
+}
+
+.player-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #777;
+    margin: 0 auto 10px;
+}
+
+.player-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-photo {
+    font-weight: bold;
+    color: #ccc;
+    font-size: 18px;
+}
+
+.player-name {
+    font-weight: bold;
+    color: white;
+    font-size: 14px;
+    margin-bottom: 5px;
+    line-height: 1.2;
+}
+
+.player-number {
+    color: #ccc;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.add-btn, .remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.add-btn {
+    background: #28a745;
+    color: white;
+}
+
+.add-btn:hover {
+    background: #218838;
+    transform: scale(1.1);
+}
+
+.remove-btn {
+    background: #dc3545;
+    color: white;
+    line-height: 1;
+}
+
+.remove-btn:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+.roster-summary {
+    margin-top: 20px;
+    padding: 20px;
+    background: var(--bs-tertiary-bg);
+    border-radius: 8px;
+    border: 1px solid #555;
+}
+
+.summary-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #ccc;
+}
+
+@media (max-width: 768px) {
+    .roster-pools {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .player-cards {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .roster-controls {
+        padding: 10px;
+    }
+    
+    .search-control input {
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .summary-stats {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+</style>
+
+<script src="/javascript/season-roster.js"></script>

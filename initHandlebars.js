@@ -27,6 +27,16 @@ hbs.handlebars.registerHelper('dateFormat', (date, format) => {
     return DateTime.fromISO(date).toFormat(format);
 });
 
+hbs.handlebars.registerHelper('formatDate', (date) => {
+    if(!date) return '';
+    return DateTime.fromJSDate(date).toFormat('MM/dd/yyyy');
+});
+
+hbs.handlebars.registerHelper('substring', (str, start, end) => {
+    if(!str) return '';
+    return str.substring(start, end);
+});
+
 hbs.handlebars.registerHelper('getAge', (date) => {
     if(!date) return '';
     const today = DateTime.now();

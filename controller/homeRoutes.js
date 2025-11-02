@@ -257,19 +257,51 @@ router.get('/match/:id', (req, res) => {
 })
 
 router.get('/season-roster/:seasonId', async (req, res) => {
+    if (!req.session.admin) {
+        res.redirect('login');
+        return;
+    }
+
     const seasonId = req.params.seasonId;
-    const players = await Player.findAll({
-        include: [
-            {
-                model: PlayerSeason,
-                where: { seasonId }
-            }
-        ]
-    })
+    
+    try {
+        // Get the season info
+        const season = await Season.findByPk(seasonId);
+        if (!season) {
+            return res.redirect('/settings');
+        }
 
-    console.log(players);
+        // Get all players with their basic info
+        const allPlayers = await Player.findAll({
+            include: [Position, College],
+            order: [['lastName', 'ASC'], ['firstName', 'ASC']]
+        });
 
-    res.render('season-roster', { seasonId, players });
+        // Get players currently in this season
+        const seasonRoster = await PlayerSeason.findAll({
+            where: { seasonId },
+            include: [Player]
+        });
+
+        // Create a map of players in the season for quick lookup
+        const playersInSeason = new Set(seasonRoster.map(ps => ps.playerId));
+
+        // Mark each player as in season or not
+        const playersWithStatus = allPlayers.map(player => {
+            const playerData = player.get({ plain: true });
+            playerData.inSeason = playersInSeason.has(player.playerId);
+            return playerData;
+        });
+
+        res.render('season-roster', { 
+            layout: 'admin',
+            season: season.get({ plain: true }),
+            players: playersWithStatus 
+        });
+    } catch (err) {
+        console.error('Season roster route error:', err);
+        res.redirect('/settings');
+    }
 })
 
 router.get('/fantasy', async (req, res) => {

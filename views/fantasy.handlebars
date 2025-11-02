@@ -1,13 +1,20 @@
 <link rel="stylesheet" href="{{basepath}}styles/roster.css">
+<link rel="stylesheet" href="{{basepath}}styles/fantasy.css">
 <section class="container p-3">
-  <div class="line mb-5 mt-4 d-flex justify-content-around align-items-center">
-    <h1>Fantasy Rankings - {{season.name}}</h1>
-    {{#if isUpcomingSeason}}
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createFantasyEntryModal">
-      Create Entry
-    </button>
-    {{/if}}
+  <div class="fantasy-header">
+    <div class="line">
+      <h1>Fantasy Chet - {{season.name}}</h1>
+    </div>
   </div>
+
+  {{#if isUpcomingSeason}}
+  <!-- Create Team Button (all screen sizes) -->
+  <div class="text-center mb-4">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createFantasyEntryModal">
+      Create Team
+    </button>
+  </div>
+  {{/if}}
 
   {{#if fantasyRankings}}
   <!-- Mobile View -->
@@ -99,29 +106,27 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Create Fantasy Entry</h5>
+        <h5 class="modal-title">Create Team</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="fantasyEntryForm">
           <input type="hidden" id="seasonId" value="{{season.seasonId}}">
-
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="firstName" class="form-label">First Name:*</label>
+              <input type="text" class="form-control" id="firstName" required>
+            </div>
+            <div class="col-md-6">
+              <label for="lastName" class="form-label">Last Name:*</label>
+              <input type="text" class="form-control" id="lastName" required>
+            </div>
+          </div>
           <div class="row mb-3">
             <div class="col-md-6">
               <label for="teamName" class="form-label">Team Name:*</label>
               <input type="text" class="form-control" id="teamName" required>
             </div>
-            <div class="col-md-3">
-              <label for="firstName" class="form-label">First Name:*</label>
-              <input type="text" class="form-control" id="firstName" required>
-            </div>
-            <div class="col-md-3">
-              <label for="lastName" class="form-label">Last Name:*</label>
-              <input type="text" class="form-control" id="lastName" required>
-            </div>
-          </div>
-
-          <div class="row mb-3">
             <div class="col-md-6">
               <label for="email" class="form-label">Email:*</label>
               <input type="email" class="form-control" id="email" required>
@@ -130,32 +135,45 @@
 
           <div class="mb-3">
             <label class="form-label">Select Players:*</label>
+            <div class="player-selection-counter" id="playerCounter">
+              Players Selected: 0/6
+            </div>
             <div class="row" id="playersGrid">
               {{#each availablePlayers}}
-              <div class="col-md-6 col-lg-4 mb-2">
-                <div class="form-check">
-                  <input class="form-check-input player-checkbox" type="checkbox" value="{{playerId}}"
-                    id="player_{{playerId}}">
-                  <label class="form-check-label" for="player_{{playerId}}">
-                    <strong>{{firstName}} {{lastName}}</strong>
-                    {{#if position}}
-                    <span class="text-muted">({{position.abbreviation}})</span>
+              <div class="col-6 col-md-4 col-lg-3 mb-3">
+                <div class="player-selection-card" data-player-id="{{playerId}}" style="cursor: pointer;">
+                  <div class="player-image-container">
+                    {{#if image}}
+                    <img src="{{../basepath}}{{image}}" alt="{{firstName}} {{lastName}}" class="player-image">
+                    {{else}}
+                    <div class="player-image-placeholder">
+                      <i class="fas fa-user"></i>
+                    </div>
                     {{/if}}
                     {{#if number}}
-                    <span class="badge bg-secondary ms-1">#{{number}}</span>
+                    <div class="player-number">#{{number}}</div>
                     {{/if}}
-                  </label>
+                  </div>
+                  <div class="player-info">
+                    <div class="player-name">{{firstName}} {{lastName}}</div>
+                    {{#if position}}
+                    <div class="player-position">{{position.abbreviation}}</div>
+                    {{/if}}
+                  </div>
+                  <div class="selection-indicator">
+                    <i class="fas fa-check"></i>
+                  </div>
                 </div>
               </div>
               {{/each}}
             </div>
-            <small class="form-text text-muted">Select the players for your fantasy team.</small>
+            <small class="form-text text-muted">Click on player cards to select them for your fantasy team. You must select exactly 6 players.</small>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="saveFantasyEntryBtn">Create Entry</button>
+        <button type="button" class="btn btn-primary" id="saveFantasyEntryBtn">Create Team</button>
       </div>
     </div>
   </div>
