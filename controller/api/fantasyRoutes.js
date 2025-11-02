@@ -4,7 +4,7 @@ const { FantasyEntry, FantasyEntryPlayer } = require('../../models');
 // Create a new fantasy entry
 router.post('/', async (req, res) => {
     try {
-        const { teamName, firstName, lastName, seasonId, selectedPlayers, email } = req.body;
+        const { teamName, firstName, lastName, seasonId, selectedPlayers } = req.body;
 
         // Validate required fields
         if (!teamName || !firstName || !lastName || !seasonId || !selectedPlayers || selectedPlayers.length === 0) {
