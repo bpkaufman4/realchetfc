@@ -7,7 +7,7 @@ router.post('/', async (req, res) => {
         const { teamName, firstName, lastName, seasonId, selectedPlayers, email } = req.body;
 
         // Validate required fields
-        if (!teamName || !firstName || !lastName || !seasonId || !selectedPlayers || selectedPlayers.length === 0 || !email) {
+        if (!teamName || !firstName || !lastName || !seasonId || !selectedPlayers || selectedPlayers.length === 0) {
             return res.status(400).json({ error: 'All fields are required and at least one player must be selected' });
         }
 
@@ -16,8 +16,7 @@ router.post('/', async (req, res) => {
             teamName,
             firstName,
             lastName,
-            seasonId,
-            email
+            seasonId
         });
 
         // Create fantasy entry players

@@ -20,10 +20,6 @@ FantasyEntry.init(
         key: 'seasonId'
       }
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -47,7 +43,7 @@ FantasyEntry.init(
     modelName: 'fantasyEntry',
     paranoid: false,
     indexes: [
-      { unique: true, fields: ['email', 'seasonId'], name: 'fantasy_entry_email_season' }
+      { unique: true, fields: ['firstName', 'lastName', 'seasonId'], name: 'fantasy_entry_name_season' }
     ]
   }
 );
