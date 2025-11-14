@@ -307,8 +307,6 @@ router.get('/season-roster/:seasonId', async (req, res) => {
 router.get('/fantasy', async (req, res) => {
     try {
         const currentDate = new Date();
-        console.log('=== FANTASY ROUTE START ===');
-        console.log('Current date:', currentDate.toISOString());
 
         // Find the current or upcoming season
         let season = await Season.findOne({
@@ -323,13 +321,6 @@ router.get('/fantasy', async (req, res) => {
             order: [['startDate', 'DESC']]
         });
         
-        console.log('Found current season:', season ? {
-            id: season.seasonId,
-            name: season.name,
-            startDate: season.startDate,
-            endDate: season.endDate
-        } : null);
-        
         // If no current season, get the next upcoming season
         if (!season) {
             season = await Season.findOne({
@@ -340,16 +331,9 @@ router.get('/fantasy', async (req, res) => {
                 },
                 order: [['startDate', 'ASC']]
             });
-            console.log('Found upcoming season:', season ? {
-                id: season.seasonId,
-                name: season.name,
-                startDate: season.startDate,
-                endDate: season.endDate
-            } : null);
         }
         
         if (!season) {
-            console.log('ERROR: No season found! Redirecting to home.');
             return res.redirect('/');
         }
 
@@ -364,35 +348,41 @@ router.get('/fantasy', async (req, res) => {
             order: [['startTime', 'DESC']]  // Most recent first
         });
 
-        console.log(`Found ${matches.length} completed matches for season ${season.seasonId}:`);
-        matches.forEach((match, index) => {
-            console.log(`  Match ${index + 1}: ID=${match.matchId}, vs ${match.opponent}, Date=${match.startTime}, SeasonId=${match.seasonId}`);
-        });
+        // OPTIMIZATION: Get all fantasy entries AND all box scores in a single query each
+        const [fantasyEntries, allBoxScores] = await Promise.all([
+            // Get all fantasy entries for this season with their players
+            FantasyEntry.findAll({
+                where: { seasonId: season.seasonId },
+                include: [
+                    {
+                        model: FantasyEntryPlayer,
+                        include: [Player]
+                    }
+                ]
+            }),
+            // Get ALL box scores for ALL matches in this season at once
+            BoxScore.findAll({
+                where: {
+                    matchId: {
+                        [Op.in]: matches.map(m => m.matchId)
+                    }
+                },
+                include: [Player] // Include player data for reference
+            })
+        ]);
 
-        // Get all fantasy entries for this season with their players
-        const fantasyEntries = await FantasyEntry.findAll({
-            where: { seasonId: season.seasonId },
-            include: [
-                {
-                    model: FantasyEntryPlayer,
-                    include: [Player]
-                }
-            ]
-        });
-        
-        console.log(`Found ${fantasyEntries.length} fantasy entries for season ${season.seasonId}:`);
-        fantasyEntries.forEach((entry, index) => {
-            console.log(`  Entry ${index + 1}: ID=${entry.fantasyEntryId}, Name='${entry.teamName}', Players=${entry.fantasyEntryPlayers.length}`);
+        // OPTIMIZATION: Create lookup maps for O(1) access instead of nested loops
+        const boxScoreMap = new Map();
+        allBoxScores.forEach(boxScore => {
+            const key = `${boxScore.playerId}-${boxScore.matchId}`;
+            boxScoreMap.set(key, boxScore);
         });
         
         // Calculate total points for each fantasy entry
         const fantasyRankings = [];
         
-        console.log('=== CALCULATING FANTASY POINTS ===');
-        
         for (const entry of fantasyEntries) {
             const entryData = entry.get({ plain: true });
-            console.log(`\nProcessing fantasy entry: "${entryData.teamName}" (ID: ${entryData.fantasyEntryId})`);
             
             let totalPoints = 0;
             const gameBreakdowns = [];
@@ -401,31 +391,19 @@ router.get('/fantasy', async (req, res) => {
             const playerTotals = {};
             entryData.fantasyEntryPlayers.forEach(fep => {
                 playerTotals[fep.player.playerId] = 0;
-                console.log(`  Player: ${fep.player.firstName} ${fep.player.lastName} (ID: ${fep.player.playerId})`);
             });
             
             // Calculate points for each match
             for (const match of matches) {
-                console.log(`\n  Processing match: ${match.opponent} on ${match.startTime} (Match ID: ${match.matchId})`);
                 const playerScores = [];
                 
                 // Calculate points for each player in this fantasy entry for this match
                 for (const fep of entryData.fantasyEntryPlayers) {
                     const player = fep.player;
                     
-                    // Get this player's box score for this match
-                    const boxScore = await BoxScore.findOne({
-                        where: { 
-                            playerId: player.playerId,
-                            matchId: match.matchId 
-                        }
-                    });
-                    
-                    console.log(`    Player ${player.firstName} ${player.lastName} (ID: ${player.playerId}):`, boxScore ? {
-                        goals: boxScore.goals || 0,
-                        assists: boxScore.assists || 0,
-                        mvp: boxScore.mvp || false
-                    } : 'NO BOX SCORE FOUND');
+                    // OPTIMIZATION: Use Map lookup instead of database query (O(1) vs O(n))
+                    const key = `${player.playerId}-${match.matchId}`;
+                    const boxScore = boxScoreMap.get(key);
                     
                     let matchPoints = 0;
                     let goals = 0;
@@ -443,10 +421,6 @@ router.get('/fantasy', async (req, res) => {
                         matchPoints += assists * 2; // Assists = 2 points each
                         matchPoints += mvp ? 5 : 0; // MVP = 5 points
                         matchPoints += player.baseScore || 0; // Base score per game
-                        
-                        console.log(`      Points breakdown: 1 (appearance) + ${goals * 3} (${goals} goals) + ${assists * 2} (${assists} assists) + ${mvp ? 5 : 0} (MVP) + ${player.baseScore || 0} (base) = ${matchPoints}`);
-                    } else {
-                        console.log(`      Player did not appear in match`);
                     }
                     
                     playerScores.push({
@@ -468,8 +442,6 @@ router.get('/fantasy', async (req, res) => {
                 const playersWhoAppeared = playerScores.filter(p => p.appeared);
                 const playersWhoDidntAppear = playerScores.filter(p => !p.appeared);
                 
-                console.log(`    Players who appeared: ${playersWhoAppeared.length}, Players who didn't appear: ${playersWhoDidntAppear.length}`);
-                
                 // Determine which player to omit based on who played
                 let matchTotal = 0;
                 let omittedPlayer = null;
@@ -477,11 +449,9 @@ router.get('/fantasy', async (req, res) => {
                 if (playersWhoDidntAppear.length > 0) {
                     // If one or more players didn't play, omit one of them (first one)
                     omittedPlayer = playersWhoDidntAppear[0];
-                    console.log(`    Omitting player who didn't appear: ${omittedPlayer.playerName}`);
                 } else if (playersWhoAppeared.length > 0) {
                     // If all players played, omit the lowest scoring player who appeared
                     omittedPlayer = playersWhoAppeared[0];
-                    console.log(`    All players appeared, omitting lowest scorer: ${omittedPlayer.playerName} (${omittedPlayer.points} points)`);
                 }
                 
                 if (omittedPlayer) {
@@ -494,7 +464,6 @@ router.get('/fantasy', async (req, res) => {
                     });
                 }
                 
-                console.log(`    Match total points: ${matchTotal} (omitted: ${omittedPlayer ? omittedPlayer.playerName : 'none'})`);
                 
                 gameBreakdowns.push({
                     matchId: match.matchId,
@@ -513,12 +482,6 @@ router.get('/fantasy', async (req, res) => {
                 fep.player.totalPoints = playerTotals[fep.player.playerId] || 0;
             });
             
-            console.log(`  Fantasy entry "${entryData.teamName}" total points: ${totalPoints}`);
-            console.log(`  Player totals:`, Object.keys(playerTotals).map(playerId => {
-                const player = entryData.fantasyEntryPlayers.find(fep => fep.player.playerId == playerId);
-                return `${player.player.firstName} ${player.player.lastName}: ${playerTotals[playerId]} points`;
-            }));
-            
             fantasyRankings.push({
                 ...entryData,
                 totalPoints,
@@ -533,16 +496,9 @@ router.get('/fantasy', async (req, res) => {
         fantasyRankings.forEach((entry, index) => {
             entry.rank = index + 1;
         });
-        
-        console.log('\n=== FINAL FANTASY RANKINGS ===');
-        fantasyRankings.forEach(entry => {
-            console.log(`Rank ${entry.rank}: "${entry.teamName}" - ${entry.totalPoints} points`);
-        });
 
         const isOngoingSeason = currentDate >= season.startDate && currentDate <= season.endDate;
         const isUpcomingSeason = currentDate < season.startDate;
-        
-        console.log(`Season status: isOngoingSeason=${isOngoingSeason}, isUpcomingSeason=${isUpcomingSeason}`);
 
         // Get all available players for the season if it's upcoming
         let availablePlayers = [];
@@ -557,10 +513,8 @@ router.get('/fantasy', async (req, res) => {
                 ]
             });
             availablePlayers = playerSeasons.map(ps => ps.player);
-            console.log(`Found ${availablePlayers.length} available players for upcoming season`);
         }
 
-        console.log('=== RENDERING FANTASY PAGE ===');
         res.render('fantasy', {
             season: season.get({ plain: true }),
             fantasyRankings,
