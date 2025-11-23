@@ -9,6 +9,7 @@ const matchImageRoutes = require('./matchImageRoutes');
 const seasonRoutes = require('./seasonRoutes');
 const fantasyRoutes = require('./fantasyRoutes');
 const playerSeasonRoutes = require('./playerSeasonRoutes');
+const baseScoreModifierRoutes = require('./baseScoreModifierRoutes');
 
 router.use('/player', playerRoutes);
 router.use('/user', userRoutes);
@@ -20,5 +21,6 @@ router.use('/match-image', matchImageRoutes);
 router.use('/season', seasonRoutes);
 router.use('/fantasy', fantasyRoutes);
 router.use('/player-season', playerSeasonRoutes);
+router.use('/base-score-modifier', baseScoreModifierRoutes);
 
 module.exports = router;

@@ -2,11 +2,12 @@ const router = require('express').Router();
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { Position, Player, Match, BoxScore, College, MatchImage, Season, PlayerSeason, FantasyEntry, FantasyEntryPlayer } = require('../models');
+const { Position, Player, Match, BoxScore, College, MatchImage, Season, PlayerSeason, FantasyEntry, FantasyEntryPlayer, BaseScoreModifier } = require('../models');
 const sequelize = require('../config/connection');
 const { Op } = require('sequelize');
 const { error } = require('console');
 const { BlockList } = require('net');
+const { calculateCumulativeBaseScore, getSeasonBaseScoreModifiers, calculateCumulativeBaseScoreFromCache } = require('../helpers');
 router.get('/', (req, res) => {
     Player.findAll({
         attributes: {
@@ -136,11 +137,18 @@ router.get('/admin-match/:id', (req, res) => {
         .then(dbData => {
             const dbDataClean = dbData.map(boxScore => boxScore.get({ plain: true }));
             return dbDataClean;
-        })
+        });
+    
+    const allPlayers = Player.findAll({
+        attributes: ['playerId', 'firstName', 'lastName'],
+        order: [['firstName', 'ASC']]
+    }).then(dbData => {
+        return dbData.map(player => player.get({ plain: true }));
+    });
 
-    Promise.all([match, boxScore])
+    Promise.all([match, boxScore, allPlayers])
         .then(reply => {
-            res.render('admin-match', { layout: 'admin', match: reply[0], boxScore: reply[1] });
+            res.render('admin-match', { layout: 'admin', match: reply[0], boxScore: reply[1], allPlayers: reply[2] });
         })
 });
 
@@ -348,8 +356,8 @@ router.get('/fantasy', async (req, res) => {
             order: [['startTime', 'DESC']]  // Most recent first
         });
 
-        // OPTIMIZATION: Get all fantasy entries AND all box scores in a single query each
-        const [fantasyEntries, allBoxScores] = await Promise.all([
+        // OPTIMIZATION: Get all fantasy entries, box scores, and base score modifiers in parallel
+        const [fantasyEntries, allBoxScores, seasonModifiers] = await Promise.all([
             // Get all fantasy entries for this season with their players
             FantasyEntry.findAll({
                 where: { seasonId: season.seasonId },
@@ -368,7 +376,9 @@ router.get('/fantasy', async (req, res) => {
                     }
                 },
                 include: [Player] // Include player data for reference
-            })
+            }),
+            // Get ALL base score modifiers for this season at once
+            getSeasonBaseScoreModifiers(season.seasonId)
         ]);
 
         // OPTIMIZATION: Create lookup maps for O(1) access instead of nested loops
@@ -410,6 +420,15 @@ router.get('/fantasy', async (req, res) => {
                     let assists = 0;
                     let mvp = false;
                     
+                    // Calculate cumulative base score for this match using cached modifiers
+                    const cumulativeBaseScore = calculateCumulativeBaseScoreFromCache(
+                        player.playerId, 
+                        match.matchId, 
+                        match.startTime, 
+                        player.baseScore || 0,
+                        seasonModifiers
+                    );
+                    
                     if (boxScore) {
                         // Player appeared in the match
                         goals = boxScore.goals || 0;
@@ -420,7 +439,7 @@ router.get('/fantasy', async (req, res) => {
                         matchPoints += goals * 3; // Goals = 3 points each
                         matchPoints += assists * 2; // Assists = 2 points each
                         matchPoints += mvp ? 5 : 0; // MVP = 5 points
-                        matchPoints += player.baseScore || 0; // Base score per game
+                        matchPoints += cumulativeBaseScore; // Cumulative base score per game
                     }
                     
                     playerScores.push({
@@ -431,7 +450,7 @@ router.get('/fantasy', async (req, res) => {
                         goals: goals,
                         assists: assists,
                         mvp: mvp,
-                        baseScore: player.baseScore || 0
+                        baseScore: cumulativeBaseScore
                     });
                 }
                 

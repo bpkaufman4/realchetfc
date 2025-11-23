@@ -39,12 +39,64 @@
     </div>
 </div>
 
+<!-- Base Score Modifier Modal -->
+<div class="modal fade" id="baseScoreModifierModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Manage Base Score Modifiers</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <h6>Current Base Score Modifiers</h6>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Modifier</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="baseScoreModifierList"></tbody>
+                    </table>
+                </div>
+                <div class="mb-3">
+                    <h6>Add New Modifier</h6>
+                    <div class="row">
+                        <div class="col-6">
+                            <select class="form-control" id="playerSelect">
+                                <option value="">Select a player...</option>
+                                {{#each allPlayers}}
+                                <option value="{{playerId}}">{{firstName}} {{lastName}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <input type="number" class="form-control" id="modifierValue" placeholder="Modifier (+/-)" step="1">
+                        </div>
+                        <div class="col-2">
+                            <button type="button" class="btn btn-primary btn-sm" id="addModifierBtn">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="d-flex justify-content-between py-3">
     <div>
         <h2 class="w-auto">{{dateTimeFormat match.startTime 'D'}} vs. {{match.opponent}}</h2>
         <p>{{evaluateMatchResult match}}</p>
     </div>
-    <button class="btn btn-primary" id="managePlayersBtn" data-bs-toggle="modal" data-bs-target="#managePlayersModal">Set Box Score</button>
+    <div>
+        <button class="btn btn-primary me-2" id="managePlayersBtn" data-bs-toggle="modal" data-bs-target="#managePlayersModal">Set Box Score</button>
+        <button class="btn btn-secondary" id="manageModifiersBtn" data-bs-toggle="modal" data-bs-target="#baseScoreModifierModal">Base Score Modifiers</button>
+    </div>
 </div>
 
 <table>

@@ -10,6 +10,7 @@ const Season = require('./Season');
 const PlayerSeason = require('./PlayerSeason');
 const FantasyEntry = require('./FantasyEntry');
 const FantasyEntryPlayer = require('./FantasyEntryPlayer');
+const BaseScoreModifier = require('./BaseScoreModifier');
 
 Player.belongsTo(College, {foreignKey: 'collegeId'});
 Player.belongsTo(Position, {foreignKey: 'positionId'});
@@ -31,5 +32,9 @@ FantasyEntryPlayer.belongsTo(FantasyEntry, {foreignKey: 'fantasyEntryId'});
 FantasyEntry.hasMany(FantasyEntryPlayer, {foreignKey: 'fantasyEntryId'});
 FantasyEntryPlayer.belongsTo(Player, {foreignKey: 'playerId'});
 Player.hasMany(FantasyEntryPlayer, {foreignKey: 'playerId'});
+BaseScoreModifier.belongsTo(Player, {foreignKey: 'playerId'});
+Player.hasMany(BaseScoreModifier, {foreignKey: 'playerId'});
+BaseScoreModifier.belongsTo(Match, {foreignKey: 'matchId'});
+Match.hasMany(BaseScoreModifier, {foreignKey: 'matchId'});
 
-module.exports = { User, College, Position, Player, Season, Match, BoxScore, Eden, MatchImage, PlayerSeason, FantasyEntry, FantasyEntryPlayer };
+module.exports = { User, College, Position, Player, Season, Match, BoxScore, Eden, MatchImage, PlayerSeason, FantasyEntry, FantasyEntryPlayer, BaseScoreModifier };
